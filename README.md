@@ -83,12 +83,6 @@ Accepted frame_size resolutions:
 
 Create chart and save image and JSON files.
 
-        :param color_mode: 'single_color' - all rectangles will be same color, 'gradient_color' - colors will be interpolated between first and last colors.
-        :param color: color as RGB list, for 'simple' - [R, G, B], for 'ramp' - [[R0, G0, B0], [R1, G1, B1]]
-        :param image_name: output image file name
-        :param json_name: output JSON file name
-        :return: chart image as numpy array
-
 Parameters:
 
 |name        |type  | meaning                                                         |
