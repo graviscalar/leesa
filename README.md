@@ -5,6 +5,7 @@
 Leesa is an open-source software for image and video processing.
 
 ## Updates
+- [2022-11-04] Leesa v0.0.2 is released.
 - [2021-12-23] Leesa v0.0.1 is released.
 
 ## Getting Started
@@ -14,8 +15,12 @@ An example of usage for chart with single color and without border:
 ``` shell
 from leesa.chart import Chart
 
-ct = Chart(frame_size='HD', width=50, height=50, offset=25, offset_at_start=True, border=False, color_background=(255, 255, 255))
-ct.chart_rectangles(color_mode='single_color', color=[[0, 255, 0]], image_name='img/out/single_color.png', json_name='img/out/single_color.json')
+ct = Chart(frame_type='HD', color_background=(255, 255, 255))
+ct.rectangles(color_mode='single_color',
+              rectangle_color=[[0, 255, 0]],
+              border=False,
+              image_name='img/out/single_color.png',
+              json_name='img/out/single_color.json')
 ```
 The output image will be:
 
@@ -27,8 +32,12 @@ An example of usage for chart with single color and border:
 ``` shell
 from leesa.chart import Chart
 
-ct = Chart(frame_size='HD', width=50, height=50, offset=25, offset_at_start=True, border=True, color_background=(255, 255, 255))
-ct.chart_rectangles(color_mode='single_color', color=[[0, 255, 0]], image_name='img/out/single_color.png', json_name='img/out/single_color.json')
+ct = Chart(frame_type='HD', color_background=(255, 255, 255))
+ct.rectangles(color_mode='single_color',
+              rectangle_color=[[0, 255, 0]],
+              border=True,
+              image_name='img/out/single_color.png',
+              json_name='img/out/single_color.json')
 ```
 The output image will be:
 
@@ -39,31 +48,34 @@ An example of usage for chart with gradient color and border:
 ``` shell
 from leesa.chart import Chart
 
-ct = Chart(frame_size='HD', width=50, height=50, offset=25, offset_at_start=True, border=True, color_background=(255, 255, 255))
-ct.chart_rectangles(color_mode='gradient_color', color=[[255, 255, 0], [0, 0, 255]], image_name='img/out/gradient_color.png', json_name='img/out/gradient_color.json')
+ct = Chart(frame_type='HD', color_background=(255, 255, 255))
+ct.rectangles(color_mode='gradient_color',
+              rectangle_color=[[255, 255, 0], [0, 0, 255]],
+              border=True,
+              image_name='img/out/gradient_color.png',
+              json_name='img/out/gradient_color.json')
+
 ```
 
 The output image will be:
 
 ![chart with gradient color and border](help/img/gradient_color_border.png)
 
+### Chart parameters
+
+![chart with gradient color and border](help/img/chart.png)
 
 ### class Chart
 
 Parameters:
 
-|name        |type  | meaning                                                         |
-|------------|------|-----------------------------------------------------------------|
-|frame_size  | str  | image size                     |
-|width       | int  | rectangle width                     |
-|height      | int  | rectangle height                    |
-|offset      | int  | offset size between rectangles                    |
-|offset_at_start  | bool  | TRUE or FALSE; offset to start first rectangle on left top corner                     |
-|border      | bool  | FALSE or TRUE; draw border and pointers                     |
-|color_background  | tuple  | color as RGB list, be default is [0, 0, 0]                    |
+|name        |type  | meaning                                                           |
+|------------|------|-------------------------------------------------------------------|
+|frame_type  | str  | frame type                                                        |
+|color_background  | tuple  | color as RGB list, be default is [0, 0, 0]                        |
 
 
-Accepted frame_size resolutions:
+Accepted frame_type resolutions:
 
 |name               | Resolution (WxH) | Ratio |
 |-------------------|------------------|-------|
@@ -85,9 +97,16 @@ Create chart and save image and JSON files.
 
 Parameters:
 
-|name        |type  | meaning                                                         |
-|------------|------|-----------------------------------------------------------------|
-|color_mode  | str  | 'single_color' - all rectangles will be same color, 'gradient_color' - colors will be interpolated between first and last colors.                     |
-|color       | list  | color as RGB list, for 'single_color' - [R, G, B], for 'gradient_color' - [[R0, G0, B0], [R1, G1, B1]]                     |
-|image_name      | str  | rectangle height                    |
-|json_name      | str  | offset size between rectangles                    |
+| name             |type  | meaning                                                                                                                           |
+|------------------|------|-----------------------------------------------------------------------------------------------------------------------------------|
+| color_mode       | str  | 'single_color' - all rectangles will be same color, 'gradient_color' - colors will be interpolated between first and last colors. |
+| rectangle_color  | list  | color as RGB list, for 'single_color' - [R, G, B], for 'gradient_color' - [[R0, G0, B0], [R1, G1, B1]]                            |
+| rectangle_width  | int  | rectangle width                                                                                                                   |
+| rectangle_height | int  | rectangle height                                                                                                                  |
+| start_x          | int  | an x offset to start first rectangle from the left top corner                                                                     |
+| start_y          | int  | an y offset to start first rectangle from the left top corner                                                                     |
+| gap_x            | int  | x distance between 2 rectangles                                                                                                   |
+| gap_y            | int  | y distance between 2 rectangles                                                                                                   |
+|border      | bool  | FALSE or TRUE; draw border and pointers                                                                                           |
+| image_name       | str  | image file name to save                                                                                                           |
+| json_name        | str  | json file name to save                                                                                                            |
