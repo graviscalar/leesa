@@ -1,14 +1,23 @@
 # Leesa
 
-## Introduction
+<!--- ![Leesa logo](help/img/leesa-logo.png) --->
 
 Leesa is an open-source software for image and video processing.
 
-## Updates
-- [2022-11-04] Leesa v0.0.2 is released.
-- [2021-12-23] Leesa v0.0.1 is released.
+Contents
+========
 
-## Getting Started
+* [Why?](#why)
+* [Usage](#usage)
+
+## Why?
+
+I wanted a tool that allows you to:
+
++ Test the performance of your demosaic algorithm for a raw image.
+
+
+## Usage
 
 An example of usage for chart with single color and without border:
 
@@ -51,7 +60,7 @@ from leesa.chart import Chart
 ct = Chart(frame_type='HD', color_background=(255, 255, 255))
 ct.rectangles(color_mode='gradient_color',
               rectangle_color=[[255, 255, 0], [0, 0, 255]],
-              border=True,
+              border=False,
               image_name='img/out/gradient_color.png',
               json_name='img/out/gradient_color.json')
 
@@ -59,11 +68,30 @@ ct.rectangles(color_mode='gradient_color',
 
 The output image will be:
 
-![chart with gradient color and border](help/img/gradient_color_border.png)
+![chart with gradient color and border](help/img/gradient_color_no_border.png)
+
+An example of usage for chart with ramp colors:
+
+``` shell
+from leesa.chart import Chart
+
+    ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
+
+    ct.ramps(image_name='img/out/ramps.png',
+             json_name='img/out/ramps.json')
+
+```
+
+The output image will be:
+
+![chart with gradient color and border](help/img/ramps.png)
+
+
 
 ### Chart parameters
 
 ![chart with gradient color and border](help/img/chart.png)
+
 
 ### class Chart
 
@@ -86,6 +114,7 @@ Accepted frame_type resolutions:
 | s2592   | 2592, 1944        |   4:3    |
 | WXGA_1152   | 1152, 768        |   3:2    |
 | WXGA_1280   | 1280, 800        |   16:10    |
+| nHD  | 640,	360 | 16:9|
 | HD   | 1280, 720        |   16:9    |
 | FHD   | 1920, 1080        |   16:9    |
 | s1440   | 1440, 720        |   18:9    |

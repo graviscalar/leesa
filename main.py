@@ -4,17 +4,32 @@ import time
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
 
-    ct = Chart(frame_type='HD', color_background=(255, 255, 255))
+    ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
+    ct.ramps(image_name='img/out/ramps.png',
+             json_name='img/out/ramps.json')
+
+    # ct.combinations(image_name='img/out/ramps.png',
+    #                 json_name='img/out/ramps.json')
+
+    ct = Chart(frame_type='nHD', color_background=(255, 255, 255))
     ct.rectangles(color_mode='single_color',
+                  rectangle_width=50,
+                  rectangle_height=50,
+                  gap_x=14,
+                  gap_y=10,
                   rectangle_color=[[0, 255, 0]],
-                  border=True,
+                  border=False,
                   image_name='img/out/single_color.png',
                   json_name='img/out/single_color.json')
 
-    ct = Chart(frame_type='HD', color_background=(255, 255, 255))
+    ct = Chart(frame_type='nHD', color_background=(255, 255, 255))
     ct.rectangles(color_mode='gradient_color',
+                  rectangle_width=50,
+                  rectangle_height=50,
+                  gap_x=14,
+                  gap_y=10,
                   rectangle_color=[[255, 255, 0], [0, 0, 255]],
-                  border=True,
+                  border=False,
                   image_name='img/out/gradient_color.png',
                   json_name='img/out/gradient_color.json')
 

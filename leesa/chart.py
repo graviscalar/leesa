@@ -5,6 +5,19 @@ import numpy as np
 import json
 import datetime
 import os
+from enum import Enum
+import itertools
+
+_COLORS = {
+    'R': (255, 0, 0),
+    'G': (0, 255, 0),
+    'B': (0, 0, 255),
+    'BL': (0, 0, 0),
+    'W': (255, 255, 255),
+    'C': (0, 255, 255),
+    'M': (255, 0, 255),
+    'Y': (255, 255, 0)
+}
 
 # frame size and frame ratio
 _FRAME_SIZE = {
@@ -15,6 +28,7 @@ _FRAME_SIZE = {
     's2592': {'w': 2592, 'h': 1944, 'ratio': '4:3'},
     'WXGA_1152': {'w': 1152, 'h': 768, 'ratio': '3:2'},
     'WXGA_1280': {'w': 1280, 'h': 800, 'ratio': '16:10'},
+    'nHD': {'w': 640, 'h': 360, 'ratio': '16:9'},
     'HD': {'w': 1280, 'h': 720, 'ratio': '16:9'},
     'FHD': {'w': 1920, 'h': 1080, 'ratio': '16:9'},
     's1440': {'w': 1440, 'h': 720, 'ratio': '18:9'},
@@ -260,3 +274,173 @@ class Chart:
                 json.dump(dt_json, outfile, indent=2)
 
         return np.array(self.img)
+
+    def ramp_draw(self,
+                  start_x: int = 0,
+                  start_y: int = 0,
+                  element_width: int = 1,
+                  element_height: int = 16,
+                  start_color: tuple = (0, 0, 0),
+                  end_color: tuple = (0, 0, 0),
+                  ramp_size: int = 256,
+                  direction: int = 0) -> list:
+        stats = []
+
+        img = np.array(self.img)  # allocate numpy image
+
+        r_step = (end_color[0] - start_color[0]) / (ramp_size - 1)
+        g_step = (end_color[1] - start_color[1]) / (ramp_size - 1)
+        b_step = (end_color[2] - start_color[2]) / (ramp_size - 1)
+
+        # create color table
+        color_table = np.zeros(shape=(ramp_size, 3), dtype=np.uint8)
+        r = start_color[0]
+        g = start_color[1]
+        b = start_color[2]
+        for i in range(ramp_size - 1):
+            color_table[i] = [int(r), int(g), int(b)]
+            r += r_step
+            g += g_step
+            b += b_step
+        color_table[ramp_size - 1] = end_color
+
+        pos_x = start_x
+        pos_y = start_y
+        for i in range(ramp_size):
+            img[pos_y:pos_y + element_height, pos_x: pos_x + element_width] = color_table[i]
+            if direction == 0:
+                pos_x += element_width
+            else:
+                pos_y += element_height
+            e = {'x': pos_x, 'y': pos_y, 'w': element_width, 'h': element_height, 'c': color_table[i].tolist()}
+            stats.append(e)
+
+        self.img = PIL.Image.fromarray(img).convert('RGB')  # convert numpy image to PIL image
+
+        return stats
+
+    def ramps(self,
+              element_width: int = 1,
+              element_height: int = 16,
+              ramp_size: int = 256,
+              image_name: str = None,
+              json_name: str = None,
+              ):
+        timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+
+        a = [[_COLORS['BL'], _COLORS['W']],
+             [_COLORS['BL'], _COLORS['R']],
+             [_COLORS['W'], _COLORS['R']],
+             [_COLORS['BL'], _COLORS['G']],
+             [_COLORS['W'], _COLORS['G']],
+             [_COLORS['BL'], _COLORS['B']],
+             [_COLORS['W'], _COLORS['B']],
+             [_COLORS['BL'], _COLORS['C']],
+             [_COLORS['W'], _COLORS['C']],
+             [_COLORS['BL'], _COLORS['M']],
+             [_COLORS['W'], _COLORS['M']],
+             [_COLORS['BL'], _COLORS['Y']],
+             [_COLORS['W'], _COLORS['Y']]
+             ]
+        x_step = 8
+        y_step = 8
+        start_x = x_step
+        start_y = y_step
+
+        stats = []
+
+        for e in a:
+            r = self.ramp_draw(start_x=start_x,
+                               start_y=start_y,
+                               start_color=e[0],
+                               end_color=e[1],
+                               element_width=element_width,
+                               element_height=element_height,
+                               ramp_size=ramp_size,
+                               direction=0,
+                               )
+            start_y = start_y + y_step + element_height
+            stats.extend(r)
+
+        start_x = x_step + len(a) * element_height + (len(a)) * x_step
+        start_y = y_step
+
+        for e in a:
+            r = self.ramp_draw(start_x=start_x,
+                               start_y=start_y,
+                               start_color=e[0],
+                               end_color=e[1],
+                               element_width=element_height,
+                               element_height=element_width,
+                               ramp_size=ramp_size,
+                               direction=1)
+            start_x = start_x + x_step + element_height
+            stats.extend(r)
+
+        # save image
+        self.img_save(image_name)
+        # save JSON
+        if json_name is not None:
+            os.makedirs(os.path.dirname(json_name), exist_ok=True)
+            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+                       'objects': stats}
+            with open(json_name, 'w') as outfile:
+                json.dump(dt_json, outfile, indent=2)
+
+    def combinations(self,
+                     element_width: int = 1,
+                     element_height: int = 16,
+                     ramp_size: int = 256,
+                     image_name: str = None,
+                     json_name: str = None,
+                     ):
+        timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+
+        a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
+             _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
+        c = list(itertools.permutations(a, 2))
+
+        x_step = 8
+        y_step = 8
+        start_x = x_step
+        start_y = y_step
+
+        stats = []
+
+        for e in a:
+            r = self.ramp_draw(start_x=start_x,
+                               start_y=start_y,
+                               start_color=e[0],
+                               end_color=e[1],
+                               element_width=element_width,
+                               element_height=element_height,
+                               ramp_size=ramp_size,
+                               direction=0,
+                               )
+            start_y = start_y + y_step + element_height
+            stats.extend(r)
+
+        start_x = x_step + len(a) * element_height + (len(a)) * x_step
+        start_y = y_step
+
+        for e in a:
+            r = self.ramp_draw(start_x=start_x,
+                               start_y=start_y,
+                               start_color=e[0],
+                               end_color=e[1],
+                               element_width=element_height,
+                               element_height=element_width,
+                               ramp_size=ramp_size,
+                               direction=1)
+            start_x = start_x + x_step + element_height
+            stats.extend(r)
+
+        # save image
+        self.img_save(image_name)
+        # save JSON
+        if json_name is not None:
+            os.makedirs(os.path.dirname(json_name), exist_ok=True)
+            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+                       'objects': stats}
+            with open(json_name, 'w') as outfile:
+                json.dump(dt_json, outfile, indent=2)
