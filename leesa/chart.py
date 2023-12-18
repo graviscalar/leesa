@@ -7,6 +7,8 @@ import datetime
 import os
 from enum import Enum
 import itertools
+from leesa.image import *
+
 
 _COLORS = {
     'R': (255, 0, 0),
@@ -158,9 +160,7 @@ class Chart:
         :return: None
         """
         # save image
-        if image_name is not None:
-            os.makedirs(os.path.dirname(image_name), exist_ok=True)
-            self.img.save(image_name)
+        img_save(img=self.img, image_name=image_name)
 
     def rectangles(self,
                    color_mode: str = 'single_color',
@@ -387,60 +387,60 @@ class Chart:
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
 
-    def combinations(self,
-                     element_width: int = 1,
-                     element_height: int = 16,
-                     ramp_size: int = 256,
-                     image_name: str = None,
-                     json_name: str = None,
-                     ):
-        timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
-
-        a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
-             _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
-        c = list(itertools.permutations(a, 2))
-
-        x_step = 8
-        y_step = 8
-        start_x = x_step
-        start_y = y_step
-
-        stats = []
-
-        for e in a:
-            r = self.ramp_draw(start_x=start_x,
-                               start_y=start_y,
-                               start_color=e[0],
-                               end_color=e[1],
-                               element_width=element_width,
-                               element_height=element_height,
-                               ramp_size=ramp_size,
-                               direction=0,
-                               )
-            start_y = start_y + y_step + element_height
-            stats.extend(r)
-
-        start_x = x_step + len(a) * element_height + (len(a)) * x_step
-        start_y = y_step
-
-        for e in a:
-            r = self.ramp_draw(start_x=start_x,
-                               start_y=start_y,
-                               start_color=e[0],
-                               end_color=e[1],
-                               element_width=element_height,
-                               element_height=element_width,
-                               ramp_size=ramp_size,
-                               direction=1)
-            start_x = start_x + x_step + element_height
-            stats.extend(r)
-
-        # save image
-        self.img_save(image_name)
-        # save JSON
-        if json_name is not None:
-            os.makedirs(os.path.dirname(json_name), exist_ok=True)
-            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
-                       'objects': stats}
-            with open(json_name, 'w') as outfile:
-                json.dump(dt_json, outfile, indent=2)
+    # def combinations(self,
+    #                  element_width: int = 1,
+    #                  element_height: int = 16,
+    #                  ramp_size: int = 256,
+    #                  image_name: str = None,
+    #                  json_name: str = None,
+    #                  ):
+    #     timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+    #
+    #     a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
+    #          _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
+    #     c = list(itertools.permutations(a, 2))
+    #
+    #     x_step = 8
+    #     y_step = 8
+    #     start_x = x_step
+    #     start_y = y_step
+    #
+    #     stats = []
+    #
+    #     for e in a:
+    #         r = self.ramp_draw(start_x=start_x,
+    #                            start_y=start_y,
+    #                            start_color=e[0],
+    #                            end_color=e[1],
+    #                            element_width=element_width,
+    #                            element_height=element_height,
+    #                            ramp_size=ramp_size,
+    #                            direction=0,
+    #                            )
+    #         start_y = start_y + y_step + element_height
+    #         stats.extend(r)
+    #
+    #     start_x = x_step + len(a) * element_height + (len(a)) * x_step
+    #     start_y = y_step
+    #
+    #     for e in a:
+    #         r = self.ramp_draw(start_x=start_x,
+    #                            start_y=start_y,
+    #                            start_color=e[0],
+    #                            end_color=e[1],
+    #                            element_width=element_height,
+    #                            element_height=element_width,
+    #                            ramp_size=ramp_size,
+    #                            direction=1)
+    #         start_x = start_x + x_step + element_height
+    #         stats.extend(r)
+    #
+    #     # save image
+    #     self.img_save(image_name)
+    #     # save JSON
+    #     if json_name is not None:
+    #         os.makedirs(os.path.dirname(json_name), exist_ok=True)
+    #         dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+    #                    'objects': stats}
+    #         with open(json_name, 'w') as outfile:
+    #             json.dump(dt_json, outfile, indent=2)

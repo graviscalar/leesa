@@ -87,6 +87,22 @@ The output image will be:
 ![chart with gradient color and border](help/img/ramps.png)
 
 
+An example of usage for converting RGB to Bayer images:
+
+``` shell
+from leesa.chart import Chart
+
+    ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
+
+    ct.ramps(image_name='img/out/ramps.png',
+             json_name='img/out/ramps.json')
+    # for RGGB Bayer type
+    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='RGGB')
+    # for BGGR Bayer type
+    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='BGGR')
+```
+
+
 
 ### Chart parameters
 

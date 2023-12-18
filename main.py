@@ -1,4 +1,5 @@
 from leesa.chart import Chart
+from leesa.bayer import *
 import time
 
 if __name__ == '__main__':
@@ -7,6 +8,8 @@ if __name__ == '__main__':
     ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
     ct.ramps(image_name='img/out/ramps.png',
              json_name='img/out/ramps.json')
+
+    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='RGGB')
 
     # ct.combinations(image_name='img/out/ramps.png',
     #                 json_name='img/out/ramps.json')
