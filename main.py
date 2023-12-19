@@ -11,8 +11,9 @@ if __name__ == '__main__':
 
     rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='RGGB')
 
-    # ct.combinations(image_name='img/out/ramps.png',
-    #                 json_name='img/out/ramps.json')
+    ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
+    ct.combinations(image_name='img/out/combinations.png',
+                    json_name='img/out/combinations.json')
 
     ct = Chart(frame_type='nHD', color_background=(255, 255, 255))
     ct.rectangles(color_mode='single_color',

@@ -101,8 +101,20 @@ from leesa.chart import Chart
     # for BGGR Bayer type
     rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='BGGR')
 ```
+An example of usage for chart with color combinations:
 
+``` shell
+from leesa.chart import Chart
 
+    ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
+    
+    ct.combinations(image_name='img/out/combinations.png',
+                    json_name='img/out/combinations.json')
+
+```
+The output image will be:
+
+![chart with gradient color and border](help/img/combinations.png)
 
 ### Chart parameters
 

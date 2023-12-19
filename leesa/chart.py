@@ -9,7 +9,6 @@ from enum import Enum
 import itertools
 from leesa.image import *
 
-
 _COLORS = {
     'R': (255, 0, 0),
     'G': (0, 255, 0),
@@ -387,60 +386,89 @@ class Chart:
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
 
-    # def combinations(self,
-    #                  element_width: int = 1,
-    #                  element_height: int = 16,
-    #                  ramp_size: int = 256,
-    #                  image_name: str = None,
-    #                  json_name: str = None,
-    #                  ):
-    #     timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
-    #
-    #     a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
-    #          _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
-    #     c = list(itertools.permutations(a, 2))
-    #
-    #     x_step = 8
-    #     y_step = 8
-    #     start_x = x_step
-    #     start_y = y_step
-    #
-    #     stats = []
-    #
-    #     for e in a:
-    #         r = self.ramp_draw(start_x=start_x,
-    #                            start_y=start_y,
-    #                            start_color=e[0],
-    #                            end_color=e[1],
-    #                            element_width=element_width,
-    #                            element_height=element_height,
-    #                            ramp_size=ramp_size,
-    #                            direction=0,
-    #                            )
-    #         start_y = start_y + y_step + element_height
-    #         stats.extend(r)
-    #
-    #     start_x = x_step + len(a) * element_height + (len(a)) * x_step
-    #     start_y = y_step
-    #
-    #     for e in a:
-    #         r = self.ramp_draw(start_x=start_x,
-    #                            start_y=start_y,
-    #                            start_color=e[0],
-    #                            end_color=e[1],
-    #                            element_width=element_height,
-    #                            element_height=element_width,
-    #                            ramp_size=ramp_size,
-    #                            direction=1)
-    #         start_x = start_x + x_step + element_height
-    #         stats.extend(r)
-    #
-    #     # save image
-    #     self.img_save(image_name)
-    #     # save JSON
-    #     if json_name is not None:
-    #         os.makedirs(os.path.dirname(json_name), exist_ok=True)
-    #         dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
-    #                    'objects': stats}
-    #         with open(json_name, 'w') as outfile:
-    #             json.dump(dt_json, outfile, indent=2)
+    def combinations(self,
+                     element_width: int = 16,
+                     element_height: int = 16,
+                     image_name: str = None,
+                     json_name: str = None,
+                     ):
+        timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+
+        a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
+             _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
+        ct = list(itertools.permutations(a, 2))
+
+        gap_x = 8
+        gap_y = 8
+        start_x = gap_x
+        start_y = gap_y
+        x2 = element_width // 2
+        y2 = element_height // 2
+
+        stats = []
+        #   estimating the maximum number of the elements in the image
+        # rectangles quantity in horizontal direction
+        rqx = (self.frame['w']) // (element_width + gap_x)
+        # rectangles quantity in vertical direction
+        rqy = (self.frame['h']) // (element_height + gap_y)
+        c_limit = len(ct)
+        if rqx * rqy < c_limit:
+            c_limit = rqx * rqy
+
+        img = np.array(self.img)  # allocate numpy image
+
+        color_pos = 0
+
+        # vertical combinations
+        pos_y = start_y
+        for y in range(rqy):
+            if color_pos == c_limit:
+                break
+            pos_x = start_x
+            for x in range(rqx):
+                if color_pos == c_limit:
+                    break
+                img[pos_y:pos_y + element_height, pos_x: pos_x + x2] = ct[color_pos][0]
+                img[pos_y:pos_y + element_height, pos_x + x2: pos_x + element_width] = ct[color_pos][1]
+                stats.append(
+                    {'x': pos_x, 'y': pos_y, 'w': x2, 'h': element_height,
+                     'c': ct[color_pos][0]})
+                stats.append(
+                    {'x': pos_x+x2, 'y': pos_y, 'w': x2, 'h': element_height,
+                     'c': ct[color_pos][0]})
+                color_pos += 1
+                pos_x = pos_x + element_width + gap_x
+            pos_y = pos_y + element_height + gap_y
+
+        # horizontal combinations
+        color_pos = 0
+        for y in range(rqy):
+            if color_pos == c_limit:
+                break
+            pos_x = start_x
+            for x in range(rqx):
+                if color_pos == c_limit:
+                    break
+                img[pos_y:pos_y + y2, pos_x: pos_x + element_width] = ct[color_pos][0]
+                img[pos_y + y2:pos_y + element_height, pos_x: pos_x + element_width] = ct[color_pos][1]
+                stats.append(
+                    {'x': pos_x, 'y': pos_y, 'w': element_width, 'h': y2,
+                     'c': ct[color_pos][0]})
+                stats.append(
+                    {'x': pos_x, 'y': pos_y+y2, 'w': element_width, 'h': y2,
+                     'c': ct[color_pos][0]})
+
+                color_pos += 1
+                pos_x = pos_x + element_width + gap_x
+            pos_y = pos_y + element_height + gap_y
+
+        self.img = PIL.Image.fromarray(img).convert('RGB')  # convert numpy image to PIL image
+        # save image
+        self.img_save(image_name)
+        # save JSON
+        if json_name is not None:
+            os.makedirs(os.path.dirname(json_name), exist_ok=True)
+            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+                       'objects': stats}
+            with open(json_name, 'w') as outfile:
+                json.dump(dt_json, outfile, indent=2)
