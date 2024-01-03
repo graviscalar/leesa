@@ -100,6 +100,8 @@ from leesa.chart import Chart
     rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='RGGB')
     # for BGGR Bayer type
     rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='BGGR')
+    # for X-TRANS Bayer type
+    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='X-TRANS')
 ```
 An example of usage for chart with color combinations:
 

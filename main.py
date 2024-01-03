@@ -9,7 +9,7 @@ if __name__ == '__main__':
     ct.ramps(image_name='img/out/ramps.png',
              json_name='img/out/ramps.json')
 
-    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='RGGB')
+    rgb_to_bayer(image_name='img/out/ramps.png', dir_name='img/out', bayer_type='X-TRANS')
 
     ct = Chart(frame_type='nHD', color_background=(127, 127, 127))
     ct.combinations(image_name='img/out/combinations.png',
