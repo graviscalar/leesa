@@ -15,6 +15,10 @@ if __name__ == '__main__':
     ct.combinations(image_name='img/out/combinations.png',
                     json_name='img/out/combinations.json')
 
+    ct = Chart(frame_type='FHD', color_background=(127, 127, 127))
+    ct.edge_test(image_name='img/out/edge_test.png',
+                    json_name='img/out/edge_test.json')
+
     ct = Chart(frame_type='nHD', color_background=(255, 255, 255))
     ct.rectangles(color_mode='single_color',
                   rectangle_width=50,

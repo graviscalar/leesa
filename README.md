@@ -15,6 +15,7 @@ Contents
 I wanted a tool that allows you to:
 
 + Test the performance of your demosaic algorithm for a raw image.
++ Test the performance of your edge detection algorithm for a rgb image.
 
 
 ## Usage
@@ -117,6 +118,22 @@ from leesa.chart import Chart
 The output image will be:
 
 ![chart with gradient color and border](help/img/combinations.png)
+
+
+An example of usage for chart for edge detection test:
+
+``` shell
+from leesa.chart import Chart
+
+    ct = Chart(frame_type='FHD', color_background=(127, 127, 127))
+    ct.edge_test(image_name='img/out/edge_test.png',
+                    json_name='img/out/edge_test.json')
+
+```
+The output image will be:
+
+![chart with gradient color and border](help/img/edge_test.png)
+
 
 ### Chart parameters
 

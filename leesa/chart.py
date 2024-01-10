@@ -434,7 +434,7 @@ class Chart:
                     {'x': pos_x, 'y': pos_y, 'w': x2, 'h': element_height,
                      'c': ct[color_pos][0]})
                 stats.append(
-                    {'x': pos_x+x2, 'y': pos_y, 'w': x2, 'h': element_height,
+                    {'x': pos_x + x2, 'y': pos_y, 'w': x2, 'h': element_height,
                      'c': ct[color_pos][0]})
                 color_pos += 1
                 pos_x = pos_x + element_width + gap_x
@@ -455,12 +455,92 @@ class Chart:
                     {'x': pos_x, 'y': pos_y, 'w': element_width, 'h': y2,
                      'c': ct[color_pos][0]})
                 stats.append(
-                    {'x': pos_x, 'y': pos_y+y2, 'w': element_width, 'h': y2,
+                    {'x': pos_x, 'y': pos_y + y2, 'w': element_width, 'h': y2,
                      'c': ct[color_pos][0]})
 
                 color_pos += 1
                 pos_x = pos_x + element_width + gap_x
             pos_y = pos_y + element_height + gap_y
+
+        self.img = PIL.Image.fromarray(img).convert('RGB')  # convert numpy image to PIL image
+        # save image
+        self.img_save(image_name)
+        # save JSON
+        if json_name is not None:
+            os.makedirs(os.path.dirname(json_name), exist_ok=True)
+            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+                       'objects': stats}
+            with open(json_name, 'w') as outfile:
+                json.dump(dt_json, outfile, indent=2)
+
+    def edge_test(self,
+                  element_width: int = 3,
+                  element_height: int = 12,
+                  image_name: str = None,
+                  json_name: str = None,
+                  ):
+        timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+
+        a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
+             _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
+        ct = list(itertools.permutations(a, 2))
+
+        gap_x = 4
+        gap_y = 3
+        start_x = gap_x
+        start_y = gap_y
+        bar_border = 2
+        x2 = element_width // 2
+        y2 = element_height // 2
+
+        stats = []
+        # bar width
+        bar_width = (gap_x + element_width) * 255 + gap_x
+        bar_height = element_height + bar_border * 2
+
+        #  estimating the maximum number of the elements in the image
+        # rectangles quantity in vertical direction
+        rqy = (self.frame['h']) // (bar_height + gap_y)
+        c_limit = len(ct)
+        if rqy < c_limit:
+            c_limit = rqy
+
+        img = np.array(self.img)  # allocate numpy image
+
+        color_pos = 0
+
+        # vertical combinations
+        pos_y = start_y
+        for y in range(rqy):
+            if color_pos == c_limit:
+                break
+            img[pos_y:pos_y + bar_height, start_x: start_x + bar_width] = ct[color_pos][0]
+            # add the vertical lines
+            pos_x = start_x
+            # prepare the color transition table
+            color_table = np.zeros(shape=(256, 3), dtype=np.uint8)
+            r_step = (ct[color_pos][1][0] - ct[color_pos][0][0]) / 255
+            g_step = (ct[color_pos][1][1] - ct[color_pos][0][1]) / 255
+            b_step = (ct[color_pos][1][2] - ct[color_pos][0][2]) / 255
+            r = ct[color_pos][0][0]
+            g = ct[color_pos][0][1]
+            b = ct[color_pos][0][2]
+            for i in range(256):
+                color_table[i] = [int(r), int(g), int(b)]
+                r += r_step
+                g += g_step
+                b += b_step
+                color_table[-1] = ct[color_pos][1]
+
+            for i in range(0, 256):
+                img[pos_y+bar_border:pos_y+bar_border + element_height, pos_x: pos_x + element_width] = color_table[i]
+                pos_x = pos_x + element_width + gap_x
+                stats.append(
+                    {'x': pos_x, 'y': pos_y, 'w': element_width, 'h': element_height,
+                     'c': color_table[i].tolist()})
+
+            color_pos += 1
+            pos_y = pos_y + bar_height + gap_y
 
         self.img = PIL.Image.fromarray(img).convert('RGB')  # convert numpy image to PIL image
         # save image
