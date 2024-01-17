@@ -9,32 +9,6 @@ from enum import Enum
 import itertools
 from leesa.image import *
 
-_COLORS = {
-    'R': (255, 0, 0),
-    'G': (0, 255, 0),
-    'B': (0, 0, 255),
-    'BL': (0, 0, 0),
-    'W': (255, 255, 255),
-    'C': (0, 255, 255),
-    'M': (255, 0, 255),
-    'Y': (255, 255, 0)
-}
-
-# frame size and frame ratio
-_FRAME_SIZE = {
-    'QQVGA': {'w': 160, 'h': 120, 'ratio': '4:3'},
-    'SXGA': {'w': 1280, 'h': 1024, 'ratio': '5:4'},
-    'XGA': {'w': 1024, 'h': 768, 'ratio': '4:3'},
-    'SXGAminus': {'w': 1280, 'h': 960, 'ratio': '4:3'},
-    's2592': {'w': 2592, 'h': 1944, 'ratio': '4:3'},
-    'WXGA_1152': {'w': 1152, 'h': 768, 'ratio': '3:2'},
-    'WXGA_1280': {'w': 1280, 'h': 800, 'ratio': '16:10'},
-    'nHD': {'w': 640, 'h': 360, 'ratio': '16:9'},
-    'HD': {'w': 1280, 'h': 720, 'ratio': '16:9'},
-    'FHD': {'w': 1920, 'h': 1080, 'ratio': '16:9'},
-    's1440': {'w': 1440, 'h': 720, 'ratio': '18:9'},
-    's2560': {'w': 2560, 'h': 1080, 'ratio': '21:9'}
-}
 # chart color type
 _CHART_COLOR_MODE = {
     'single_color': 0,
@@ -70,6 +44,8 @@ class Chart:
         :param frame_type: key value taken from the _FRAME_SIZE dictionary
         :param color_background: color for image background fill, color as RGB list
         """
+        fr = FrameResolution()
+        _FRAME_SIZE = fr.get_dict()
 
         self.frame_type = frame_type
         if frame_type is None:
@@ -327,6 +303,9 @@ class Chart:
               ):
         timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
 
+        c = Colors()
+        _COLORS = c.get_dict()
+
         a = [[_COLORS['BL'], _COLORS['W']],
              [_COLORS['BL'], _COLORS['R']],
              [_COLORS['W'], _COLORS['R']],
@@ -393,6 +372,9 @@ class Chart:
                      json_name: str = None,
                      ):
         timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
+
+        c = Colors()
+        _COLORS = c.get_dict()
 
         a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
              _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
@@ -481,6 +463,9 @@ class Chart:
                   ):
         timestamp = datetime.datetime.now().strftime("%d-%b-%Y(%H-%M-%S)")
 
+        c = Colors()
+        _COLORS = c.get_dict()
+
         a = [_COLORS['BL'], _COLORS['W'], _COLORS['R'], _COLORS['G'],
              _COLORS['B'], _COLORS['C'], _COLORS['M'], _COLORS['Y']]
         ct = list(itertools.permutations(a, 2))
@@ -533,7 +518,8 @@ class Chart:
                 color_table[-1] = ct[color_pos][1]
 
             for i in range(0, 256):
-                img[pos_y+bar_border:pos_y+bar_border + element_height, pos_x: pos_x + element_width] = color_table[i]
+                img[pos_y + bar_border:pos_y + bar_border + element_height, pos_x: pos_x + element_width] = color_table[
+                    i]
                 pos_x = pos_x + element_width + gap_x
                 stats.append(
                     {'x': pos_x, 'y': pos_y, 'w': element_width, 'h': element_height,

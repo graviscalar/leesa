@@ -8,7 +8,8 @@ Contents
 ========
 
 * [Why?](#why)
-* [Usage](#usage)
+* [Usage for demosaic chart creation](#usage-for-demosaic-chart-creation)
+* [Usage for edge chart creation](#usage-for-edge-chart-creation)
 
 ## Why?
 
@@ -16,9 +17,10 @@ I wanted a tool that allows you to:
 
 + Test the performance of your demosaic algorithm for a raw image.
 + Test the performance of your edge detection algorithm for a rgb image.
+<!---+ Test the performance of your object detection algorithm for a rgb image.--->
 
 
-## Usage
+## Usage for demosaic chart creation
 
 An example of usage for chart with single color and without border:
 
@@ -53,7 +55,7 @@ The output image will be:
 
 ![chart with single color and border](help/img/single_color_border.png)
 
-An example of usage for chart with gradient color and border:
+An example of usage for chart with gradient color and no border:
 
 ``` shell
 from leesa.chart import Chart
@@ -119,6 +121,8 @@ The output image will be:
 
 ![chart with gradient color and border](help/img/combinations.png)
 
+
+## Usage for edge chart creation
 
 An example of usage for chart for edge detection test:
 
