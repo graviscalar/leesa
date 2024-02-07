@@ -50,76 +50,78 @@ def dir_delete_all_files(directory: str, pattern: list) -> int:
     return i
 
 
-def dir_get_all_files(directory: str):
+# def dir_get_all_files(directory: str):
+#     """
+#     Return list of all files in particular directory
+#
+#     :param directory: search all files within directory
+#     :return: the list of files
+#     """
+#     files_list = []
+#     for root, _, filenames in os.walk(directory):
+#         for filename in filenames:
+#             filepath = os.path.join(root, filename)
+#             files_list.append(filepath)
+#     return files_list
+
+def dir_get_list_off_all_files(directory: str, pattern: list) -> list:
     """
     Return list of all files in particular directory
 
     :param directory: search all files within directory
+    :param pattern: pattern to search. example - ['*.png', '*.jpg', '*.json']
     :return: the list of files
     """
-    files_list = []
-    for root, _, filenames in os.walk(directory):
-        for filename in filenames:
-            filepath = os.path.join(root, filename)
-            files_list.append(filepath)
-    return files_list
+    file_list = []
+    print("Gathering files in directory ", directory, " procedure started")
+    for root, dirs, files in os.walk(directory):
+        for basename in files:
+            for e in pattern:
+                if fnmatch.fnmatch(basename, e):
+                    file_name = os.path.join(root, basename)
+                    file_list.append(file_name)
+    print("Gathered {0} files".format(len(file_list)))
+    print("Gathering files in directory ", directory, " procedure complete")
+    return file_list
 
 
-# # ----------------------------------------------------------------------------------------------------------------------
-# # --- Return list of the all files in particular directory
-# #
-# # directory:            search all files within directory:
-# # pattern:              pattern to search
-# #
-# # return:       list of files, quantity of files
-# # ----------------------------------------------------------------------------------------------------------------------
-# def ts_directory_get_list_off_all_files(directory: str, pattern: list) -> tuple:
-#     file_list = []
-#     print("Gathering files in directory ", directory, " procedure started")
-#     for root, dirs, files in os.walk(directory):
-#         for basename in files:
-#             for e in pattern:
-#                 if fnmatch.fnmatch(basename, e):
-#                     file_name = os.path.join(root, basename)
-#                     file_list.append(file_name)
-#     print("Gathered {0} files".format(len(file_list)))
-#     print("Gathering files in directory ", directory, " procedure complete")
-#     return file_list, len(file_list)
-#
-#
-# # ----------------------------------------------------------------------------------------------------------------------
-# # --- Return list of pairs as image and json
-# #
-# # ----------------------------------------------------------------------------------------------------------------------
-# def ts_get_image_json_pair(directory_img: str, pattern_img: list, directory_json: str, pattern_json: list) -> tuple:
-#     result = True
-#     pairs = []
-#     fl_img, qy_img = ts_directory_get_list_off_all_files(directory_img, pattern_img)
-#     fl_json, qy_json = ts_directory_get_list_off_all_files(directory_json, pattern_json)
-#     if qy_img == qy_json:
-#         # search by image list
-#         for e in fl_img:
-#             img_ne = os.path.splitext(os.path.basename(e))
-#             search = False
-#             for s in fl_json:
-#                 json_ne = os.path.splitext(os.path.basename(s))
-#                 if img_ne[0] == json_ne[0]:
-#                     pairs.append([e, s])
-#                     search = True
-#                     break
-#             if search is False:
-#                 print("The image file {0} is not paired with JSON file".format(e))
-#                 result = False
-#                 break
-#         if result is True:
-#             print("The {0} pairs of image and JSON is gathered".format(len(pairs)))
-#     else:
-#         result = False
-#         print("Incorrect number of pairs. Gathered {0} images and {1} JSON files".format(qy_img, qy_json))
-#
-#     return result, pairs
-#
-#
+def get_image_json_pair_dir(directory_img: str, pattern_img: list, directory_json: str, pattern_json: list) -> tuple:
+    """
+    Return list of pairs as image and json in the directory
+
+    :param directory_img: search all image files within directory
+    :param pattern_img: pattern to search  images. example - ['*.png', '*.jpg']
+    :param directory_json: search all json files within directory
+    :param pattern_json: pattern to search json files example - ['*.json']
+    :return: the list of pairs. the pair is an image and json
+    """
+    result = True
+    pairs = []
+    fl_img = dir_get_list_off_all_files(directory_img, pattern_img)
+    fl_json = dir_get_list_off_all_files(directory_json, pattern_json)
+    if len(fl_img) == len(fl_json):
+        # search by image list
+        for e in fl_img:
+            img_ne = os.path.splitext(os.path.basename(e))
+            search = False
+            for s in fl_json:
+                json_ne = os.path.splitext(os.path.basename(s))
+                if img_ne[0] == json_ne[0]:
+                    pairs.append([e, s])
+                    search = True
+                    break
+            if search is False:
+                print("The image file {0} is not paired with JSON file".format(e))
+                result = False
+                break
+        if result is True:
+            print("The {0} pairs of image and JSON is gathered".format(len(pairs)))
+    else:
+        result = False
+        print("Incorrect number of pairs. Gathered {0} images and {1} JSON files".format(len(fl_img) , len(fl_json)))
+
+    return result, pairs
+
 # def ts_directory_zip_and_delete_all_files(directory: str, v_zip_fn: str, pattern: list) -> int:
 #     print("Compressing and Erasing files in directory ", directory, " procedure started")
 #     i = 0
@@ -174,3 +176,10 @@ def dir_get_all_files(directory: str):
 #                                    fps_output=p_fps_output,
 #                                    output=p_video_out)
 #     subprocess.call(str_ffmpeg, shell=True)
+
+
+def dictionary_compare_keys(etalon, d)->bool:
+    for e in etalon.keys():
+        if e not in d:
+            return False
+    return True

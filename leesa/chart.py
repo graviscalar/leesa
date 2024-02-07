@@ -243,7 +243,7 @@ class Chart:
         # save JSON
         if json_name is not None:
             os.makedirs(os.path.dirname(json_name), exist_ok=True)
-            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'rectangle', 'color': 'RGB',
+            dt_json = {'exporter': 'Leesa Exporter v0.1.6', 'time': timestamp, 'type': 'rectangle', 'color': 'RGB',
                        'objects': stats}
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
@@ -360,7 +360,7 @@ class Chart:
         # save JSON
         if json_name is not None:
             os.makedirs(os.path.dirname(json_name), exist_ok=True)
-            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+            dt_json = {'exporter': 'Leesa Exporter v0.1.6', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
                        'objects': stats}
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
@@ -450,7 +450,7 @@ class Chart:
         # save JSON
         if json_name is not None:
             os.makedirs(os.path.dirname(json_name), exist_ok=True)
-            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+            dt_json = {'exporter': 'Leesa Exporter v0.1.6', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
                        'objects': stats}
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
@@ -534,7 +534,7 @@ class Chart:
         # save JSON
         if json_name is not None:
             os.makedirs(os.path.dirname(json_name), exist_ok=True)
-            dt_json = {'exporter': 'Leesa Exporter v0.0.2', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
+            dt_json = {'exporter': 'Leesa Exporter v0.1.6', 'time': timestamp, 'type': 'ramps', 'color': 'RGB',
                        'objects': stats}
             with open(json_name, 'w') as outfile:
                 json.dump(dt_json, outfile, indent=2)
