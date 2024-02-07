@@ -1,5 +1,6 @@
 import PIL.Image
 from leesa.image import *
+import numpy as np
 
 
 def rgb_to_xtrans(c, channel):

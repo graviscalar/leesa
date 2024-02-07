@@ -224,14 +224,14 @@ An example of usage for chart for face detection test:
 ``` shell
 from leesa.odchart import ODChart
 
-    ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
-    ct.f_to_one_image(dir_img='tests/data_sample/sample_0/',
-                                dir_json='tests/data_sample/sample_0/',
-                                dir_out='img/out',
-                                scale_size=4,
-                                scales= [35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20],
-                                scale_mode=0)
-
+ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
+ct.object_to_one_image(dir_img='tests/data_sample/sample_0/',
+                       dir_json='tests/data_sample/sample_0/',
+                       dir_out='img/out',
+                       scales=[55, 45, 35, 25, 15],
+                       scale_size=4,
+                       scale_mode=0,
+                      )
 ```
 
 The output image will be:
