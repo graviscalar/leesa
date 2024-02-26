@@ -11,16 +11,17 @@ Contents
 * [Resolution](#resolution)
 * [Usage for demosaic chart creation](#usage-for-demosaic-chart-creation)
 * [Usage for edge chart creation](#usage-for-edge-chart-creation)
-* [Data preparation for face object](#data-preparation-for-face-object)
-* [Usage for object detection chart creation](#usage-for-object-detection-chart-creation)
-
+* [Data preparation for human detection](#data-preparation-for-human-detection)
+* [Usage for face detection chart](#usage-for-face-detection-chart)
+* [Usage for human detection chart](#usage-for-human-detection-chart)
+* 
 ## Why?
 
 I wanted a tool that allows you to:
 
 + Test the performance of your demosaic algorithm for a raw image.
 + Test the performance of your edge detection algorithm for a rgb image.
-+ Test the performance of your face detection algorithm for a rgb image.
++ Test the performance of your human detection algorithm for a rgb image.
 
 ## Resolution
 
@@ -194,9 +195,9 @@ Parameters:
 | image_name       | str  | image file name to save                                                                                                           |
 | json_name        | str  | json file name to save                                                                                                            |
 
-## Data preparation for face object
+## Data preparation for human detection
 
-Rename you image (for example: sample_0.jpg). Create the JSON file with same name (for example: sample_0.json).
+Rename your image (for example: sample_0.jpg). Create the JSON file with same name (for example: sample_0.json).
 Add to JSON file the x, y coordinates of the detection rectangle, width and height of the detection rectangle, face width, and distance between eyes.
 
 For example the JSON data will be:
@@ -205,38 +206,51 @@ For example the JSON data will be:
 	{"obj":"face", "x": 672, "y": 42, "w": 970, "h": 1134, "face_w": 460, "eyes_d": 236}
 ]
 ```
-An image below explains the JSON fields.
 
-An image width will be scaled by using the 'scale' and 'scale_size' parameter and . 
+The face image width will be scaled by using the 'scale' and 'scale_size' parameters and parameter 'scale mode'. 
 For example: 'scale' = 10 and 'scale_size' = 4, the calculation is: 'detection rectangle width' = 'scale' * 'scale_size' = 10 * 4 = 40
 
 The 3 modes for scaling is used (parameter 'scale_mode'):
-* 0 - scale by detection rectangle width or 'w'
-* 1 - scale by width of the face or 'face_w'
-* 2 - scale by distance between eyes or 'eyes_d'
+* 0 - scale by the detection rectangle width or 'w'
+* 1 - scale by the width of the face or 'face_w'
+* 2 - scale by the distance between eyes or 'eyes_d'
+
+An image below explains the JSON fields for Face detection.
 
 ![face parametrs](help/img/face.png)
 
-## Usage for object detection chart creation
+For example the JSON data will be:
+``` shell
+[
+	{"obj":"face", "x": 512, "y": 62, "w": 512, "h": 704, "face_w": 342, "eyes_d": 146},
+	{"obj":"head_shoulders", "x": 134, "y": 66, "w": 1280, "h": 1472},
+	{"obj":"figure", "x": 134, "y": 66, "w": 1280, "h": 4672}	
+]
+```
+An image below explains the JSON fields for Face, Head and Shoulder, and FIgure detections.
 
-An example of usage for chart for face detection test:
+![face parametrs](help/img/all_objects.png)
+
+## Usage for face detection chart
+
+An example of usage for face detection test:
 
 ``` shell
 from leesa.odchart import ODChart
 
 ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
-ct.object_to_one_image(dir_img='tests/data_sample/sample_0/',
-                       dir_json='tests/data_sample/sample_0/',
-                       dir_out='img/out',
-                       scales=[55, 45, 35, 25, 15],
-                       scale_size=4,
-                       scale_mode=0,
-                      )
+ct.f_to_one_image(dir_img='tests/data_sample/sample_0/',
+                  dir_json='tests/data_sample/sample_0/',
+                  dir_out='img/out',
+                  scale_size=4,
+                  scales= [55, 45, 35, 25, 15],
+                  scale_mode=0)
+
 ```
 
 The output image will be:
 
-![chart with object detection targets](help/img/sample_0_scales-55-15_detect-face.png)
+![chart with face detection targets](help/img/sample_0_scales-55-15_detect-face.png)
 
 The output JSON file will be:
 ``` shell
@@ -246,4 +260,75 @@ The output JSON file will be:
            {"x":420,"y":0,"w":140,"h":163,"scale":35}, {"x":450,"y":175,"w":100,"h":116,"scale":25},
            {"x":255,"y":225,"w":60,"h":70,"scale":15}]
 }
+```
+
+## Usage for human detection chart
+
+An example of usage for human detection test:
+
+``` shell
+from leesa.odchart import ODChart
+
+ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
+ct.object_to_images(dir_img='tests/data_sample/sample_2/',
+                    dir_json='tests/data_sample/sample_2/',
+                    dir_out='img/out',
+                    scales=[15],
+                    scale_size=5
+                    )
+```
+The output image for Face will be:
+
+![chart with face detection targets](help/img/sample_1_scale-15_detect-face.png)
+
+The output JSON file will be:
+``` shell
+{"exporter":"Leesa Exporter v0.1.8","time":"23-Feb-2024(15-02-30-319928)",
+"type":"object detection","scale_size":5,"detect_type":"face","objects":[
+{"x":5,"y":5,"w":75,"h":103,"scale":15},{"x":85,"y":5,"w":75,"h":103,"scale":15},
+{"x":165,"y":5,"w":75,"h":103,"scale":15},{"x":245,"y":5,"w":75,"h":103,"scale":15},
+{"x":325,"y":5,"w":75,"h":103,"scale":15},{"x":405,"y":5,"w":75,"h":103,"scale":15},
+{"x":485,"y":5,"w":75,"h":103,"scale":15},{"x":5,"y":113,"w":75,"h":103,"scale":15},
+{"x":85,"y":113,"w":75,"h":103,"scale":15},{"x":165,"y":113,"w":75,"h":103,"scale":15},
+{"x":245,"y":113,"w":75,"h":103,"scale":15},{"x":325,"y":113,"w":75,"h":103,"scale":15},
+{"x":405,"y":113,"w":75,"h":103,"scale":15},{"x":485,"y":113,"w":75,"h":103,"scale":15},
+{"x":5,"y":221,"w":75,"h":103,"scale":15},{"x":85,"y":221,"w":75,"h":103,"scale":15},
+{"x":165,"y":221,"w":75,"h":103,"scale":15},{"x":245,"y":221,"w":75,"h":103,"scale":15},
+{"x":325,"y":221,"w":75,"h":103,"scale":15},{"x":405,"y":221,"w":75,"h":103,"scale":15},
+{"x":485,"y":221,"w":75,"h":103,"scale":15}]}
+```
+
+The output image for Head and Shoulders will be:
+
+![chart with head and shoulders detection targets](help/img/sample_1_scale-15_detect-head_shoulders.png)
+
+The output JSON file will be:
+``` shell
+{"exporter":"Leesa Exporter v0.1.8","time":"23-Feb-2024(15-02-30-344933)",
+"type":"object detection","scale_size":5,"detect_type":"head_shoulders","objects":[
+{"x":5,"y":5,"w":75,"h":86,"scale":15},{"x":85,"y":5,"w":75,"h":86,"scale":15},
+{"x":165,"y":5,"w":75,"h":86,"scale":15},{"x":245,"y":5,"w":75,"h":86,"scale":15},
+{"x":325,"y":5,"w":75,"h":86,"scale":15},{"x":405,"y":5,"w":75,"h":86,"scale":15},
+{"x":485,"y":5,"w":75,"h":86,"scale":15},{"x":5,"y":96,"w":75,"h":86,"scale":15},
+{"x":85,"y":96,"w":75,"h":86,"scale":15},{"x":165,"y":96,"w":75,"h":86,"scale":15},
+{"x":245,"y":96,"w":75,"h":86,"scale":15},{"x":325,"y":96,"w":75,"h":86,"scale":15},
+{"x":405,"y":96,"w":75,"h":86,"scale":15},{"x":485,"y":96,"w":75,"h":86,"scale":15},
+{"x":5,"y":187,"w":75,"h":86,"scale":15},{"x":85,"y":187,"w":75,"h":86,"scale":15},
+{"x":165,"y":187,"w":75,"h":86,"scale":15},{"x":245,"y":187,"w":75,"h":86,"scale":15},
+{"x":325,"y":187,"w":75,"h":86,"scale":15},{"x":405,"y":187,"w":75,"h":86,"scale":15},
+{"x":485,"y":187,"w":75,"h":86,"scale":15}]}
+```
+
+The output image for Figure will be:
+
+![chart with figure detection targets](help/img/sample_1_scale-15_detect-figure.png)
+
+The output JSON file will be:
+``` shell
+{"exporter":"Leesa Exporter v0.1.8","time":"23-Feb-2024(15-02-30-398438)",
+"type":"object detection","scale_size":5,"detect_type":"figure","objects":[
+{"x":5,"y":5,"w":75,"h":273,"scale":15},{"x":85,"y":5,"w":75,"h":273,"scale":15},
+{"x":165,"y":5,"w":75,"h":273,"scale":15},{"x":245,"y":5,"w":75,"h":273,"scale":15},
+{"x":325,"y":5,"w":75,"h":273,"scale":15},{"x":405,"y":5,"w":75,"h":273,"scale":15},
+{"x":485,"y":5,"w":75,"h":273,"scale":15}]}
 ```

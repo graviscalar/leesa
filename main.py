@@ -58,10 +58,19 @@ if __name__ == '__main__':
     ct.object_to_one_image(dir_img='tests/data_sample/sample_0/',
                            dir_json='tests/data_sample/sample_0/',
                            dir_out='img/out',
-                           scales=[55, 45, 35, 25, 15],
-                           scale_size=4,
-                           scale_mode=0,
+                           scales=[30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
+                           scale_size=5,
+                           scale_mode=1,
                            )
+
+    # An example of usage for object detection chart with multiple images
+    ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
+    ct.object_to_images(dir_img='tests/data_sample/sample_2/',
+                        dir_json='tests/data_sample/sample_2/',
+                        dir_out='img/out',
+                        scales=[15],
+                        scale_size=5
+                        )
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
