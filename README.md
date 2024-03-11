@@ -14,7 +14,8 @@ Contents
 * [Data preparation for human detection](#data-preparation-for-human-detection)
 * [Usage for face detection chart](#usage-for-face-detection-chart)
 * [Usage for human detection chart](#usage-for-human-detection-chart)
-* 
+* [Estimation of distance to human](#estimation-of-distance-to-human) 
+
 ## Why?
 
 I wanted a tool that allows you to:
@@ -22,25 +23,26 @@ I wanted a tool that allows you to:
 + Test the performance of your demosaic algorithm for a raw image.
 + Test the performance of your edge detection algorithm for a rgb image.
 + Test the performance of your human detection algorithm for a rgb image.
++ Estimate the distance between human detection and camera.
 
 ## Resolution
 
 Accepted frame_type resolutions:
 
-|name               | Resolution (WxH) | Ratio |
-|-------------------|------------------|-------|
-| QQVGA       | 160, 120        |   4:3    |
+|name         | Resolution (WxH)  |  Ratio   |
+|-------------|-------------------|----------|
+| QQVGA       | 160, 120          |   4:3    |
 | SXGA        | 1280, 1024        |   5:4    |
-| XGA         | 1024, 768        |   4:3    |
-| SXGAminus   | 1280, 960        |   4:3    |
-| s2592   | 2592, 1944        |   4:3    |
-| WXGA_1152   | 1152, 768        |   3:2    |
-| WXGA_1280   | 1280, 800        |   16:10    |
-| nHD  | 640, 360 | 16:9|
-| HD   | 1280, 720        |   16:9    |
-| FHD   | 1920, 1080        |   16:9    |
-| s1440   | 1440, 720        |   18:9    |
-| s2560   | 2560, 1080        |   21:9    |
+| XGA         | 1024, 768         |   4:3    |
+| SXGAminus   | 1280, 960         |   4:3    |
+| s2592       | 2592, 1944        |   4:3    |
+| WXGA_1152   | 1152, 768         |   3:2    |
+| WXGA_1280   | 1280, 800         |   16:10  |
+| nHD         | 640, 360          |   16:9   |
+| HD          | 1280, 720         |   16:9   |
+| FHD         | 1920, 1080        |   16:9   |
+| s1440       | 1440, 720         |   18:9   |
+| s2560       | 2560, 1080        |   21:9   |
 
 ## Usage for demosaic chart creation
 
@@ -331,4 +333,49 @@ The output JSON file will be:
 {"x":165,"y":5,"w":75,"h":273,"scale":15},{"x":245,"y":5,"w":75,"h":273,"scale":15},
 {"x":325,"y":5,"w":75,"h":273,"scale":15},{"x":405,"y":5,"w":75,"h":273,"scale":15},
 {"x":485,"y":5,"w":75,"h":273,"scale":15}]}
+```
+## Estimation of distance to human
+
+Required parameters: focal length, sensor name or frame type with sensor diagonal size.
+
+Supported sensors:
+
+|resolution   | Sensors  |
+|-------------|-------------------|
+| 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD  |
+| 4-6M       | IMX664-AAQR1  |
+| 7-8M       | IMX585-AAQJ1  |
+| 9-20M       | IMX294CJK |
+| 21-30M       | IMX571BQR-J |
+| > 31M       | IMX455AQK-K  |
+
+The 3 modes for estimation is used (parameter 'smode'):
+* 0 - estimation by the distance between eyes or 'eyes_d'
+* 1 - estimation by the width of the face or 'face_w'
+* 2 - estimation by human height 'human_h'
+
+An example of the distance estimation between human and camera
+
+``` shell
+from leesa.camera import *
+from leesa.human import *
+
+# An example of usage for distance estimation
+sr = Sensor(sensor_name='IMX482LQJ')
+os = Optics(focal_length=4e-03)
+c = Camera(sensor=sr, optics=os)
+h = Human()
+r = h.camera_to_distance(eyes_d=146, cam=c, mode=0) # by eyes distance
+print(r)
+r = h.camera_to_distance(face_w=342, cam=c, mode=1) # by face width
+print(r)
+r = h.camera_to_distance(human_h=4672, cam=c, mode=2) # by human height
+print(r)
+# An example of usage for focal length estimation
+r = h.distance_to_focal(eyes_d=146, cam=c, distance=0.3, mode=0) # by eyes distance
+print(r)
+r = h.distance_to_focal(face_w=342, cam=c, distance=0.3, mode=1) # by face width
+print(r)
+r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2) # by human height
+print(r)
 ```

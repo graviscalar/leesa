@@ -1,6 +1,8 @@
 from leesa.chart import Chart
 from leesa.odchart import ODChart
 from leesa.bayer import *
+from leesa.camera import *
+from leesa.human import *
 import time
 
 if __name__ == '__main__':
@@ -54,23 +56,44 @@ if __name__ == '__main__':
                   json_name='img/out/gradient_color.json')
 
     # An example of usage for object detection chart
-    ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
-    ct.object_to_one_image(dir_img='tests/data_sample/sample_0/',
-                           dir_json='tests/data_sample/sample_0/',
+    ct = ODChart(frame_type='HD', color_background=(255, 255, 255))
+    ct.object_to_one_image(dir_img='tests/data_sample/sample_2/',
+                           dir_json='tests/data_sample/sample_2/',
                            dir_out='img/out',
-                           scales=[30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
-                           scale_size=5,
-                           scale_mode=1,
+                           # scales=[30, 25, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5],
+                           scale_size=3,
+                           scale_mode=0,
                            )
 
     # An example of usage for object detection chart with multiple images
-    ct = ODChart(frame_type='nHD', color_background=(255, 255, 255))
+    ct = ODChart(frame_type='HD', color_background=(255, 255, 255))
     ct.object_to_images(dir_img='tests/data_sample/sample_2/',
                         dir_json='tests/data_sample/sample_2/',
                         dir_out='img/out',
-                        scales=[15],
-                        scale_size=5
+                        scales=[17, 18, 19, 20],
+                        scale_size=3,
+                        gap_x=8,
+                        gap_y=8
                         )
+
+    # An example of usage for distance estimation
+    sr = Sensor(sensor_name='IMX482LQJ')
+    os = Optics(focal_length=4e-03)
+    c = Camera(sensor=sr, optics=os)
+    h = Human()
+    r = h.camera_to_distance(eyes_d=146, cam=c, mode=0)
+    print(r)
+    r = h.camera_to_distance(face_w=342, cam=c, mode=1)
+    print(r)
+    r = h.camera_to_distance(human_h=4672, cam=c, mode=2)
+    print(r)
+    # An example of usage for focal length estimation
+    r = h.distance_to_focal(eyes_d=146, cam=c, distance=0.3, mode=0)
+    print(r)
+    r = h.distance_to_focal(face_w=342, cam=c, distance=0.3, mode=1)
+    print(r)
+    r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2)
+    print(r)
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
