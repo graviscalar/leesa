@@ -26,6 +26,16 @@ class SensorSony:
                       'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX571BQR-J_Flyer.pdf'},
         'IMX455AQK-K': {'resolution': 'IMX455', 'diagonal': 0.0433, 'fps': 558,
                         'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX455AQK-K_Flyer.pdf'},
+        'IMX464LQR_LQR1': {'resolution': 'IMX664', 'diagonal': 0.00904, 'fps': 90,
+                        'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX464LQR_LQR1_Flyer.pdf'},
+        'IMX347LQR': {'resolution': 'IMX664', 'diagonal': 0.00904, 'fps': 90,
+                           'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX347LQR_Flyer.pdf'},
+        'IMX178LQJ': {'resolution': 'IMX178', 'diagonal': 0.00892, 'fps': 60,
+                      'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX178LQJ_Flyer.pdf'},
+        'IMX675-AAQR': {'resolution': 'IMX675', 'diagonal': 0.00653, 'fps': 80,
+                      'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX675-AAQR_AAQR1_AATN_Flyer.pdf'},
+        'IMX335LQN': {'resolution': 'IMX675', 'diagonal': 0.00652, 'fps': 60,
+                        'link': 'https://www.sony-semicon.com/files/62/flyer_security/IMX335LQN_Flyer.pdf'},
     }
 
     def get_dict(self):

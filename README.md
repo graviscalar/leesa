@@ -43,6 +43,14 @@ Accepted frame_type resolutions:
 | FHD         | 1920, 1080        |   16:9   |
 | s1440       | 1440, 720         |   18:9   |
 | s2560       | 2560, 1080        |   21:9   |
+| IMX664      | 2688, 1520        |   16:9   |
+| 4K_UHD      | 3840, 2160        |   16:9   |
+| IMX294      | 4168, 2176        |   17:9   |
+| IMX571      | 6244, 4168        |   3:2    |
+| IMX455      | 9568, 6380        |   3:2    |
+| IMX178      | 3096, 2080        |   16:9   |
+| IMX675      | 2592, 1944        |   16:9   |
+
 
 ## Usage for demosaic chart creation
 
@@ -343,7 +351,7 @@ Supported sensors:
 |resolution   | Sensors  |
 |-------------|-------------------|
 | 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD  |
-| 4-6M       | IMX664-AAQR1  |
+| 4-6M       | IMX664-AAQR1, IMX464LQR_LQR1, IMX347LQR, IMX178LQJ, IMX675-AAQR, IMX335LQN  |
 | 7-8M       | IMX585-AAQJ1  |
 | 9-20M       | IMX294CJK |
 | 21-30M       | IMX571BQR-J |
