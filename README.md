@@ -49,6 +49,7 @@ Accepted frame_type resolutions:
 | WUXGA       | 1920, 1200        |   16:10  |
 | QWXGA       | 2048, 1152        |   16:9   |
 | QXGA        | 2048, 1536        |   4:3    |
+| OS03B10     | 2304, 1296        |   16:9   |
 | s2560       | 2560, 1080        |   21:9   |
 | QHD         | 2560, 1440        |   16:9   |
 | WQXGA       | 2560, 1600        |   16:10  |
@@ -360,8 +361,8 @@ Supported sensors:
 
 |resolution   | Sensors  |
 |-------------|-------------------|
-| 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD  |
-| 4-6M       | IMX664-AAQR1, IMX464LQR_LQR1, IMX347LQR, IMX178LQJ, IMX675-AAQR, IMX335LQN  |
+| 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD, OS02C10, OS02G10, OS02H10, OS02N10, OS03B10 |
+| 4-6M       | IMX664-AAQR1, IMX464LQR_LQR1, IMX347LQR, IMX178LQJ, IMX675-AAQR, IMX335LQN, OS04A10, OS04C10 |
 | 7-8M       | IMX585-AAQJ1, IMX485LQJ_LQJ1, IMX678-AAQR1, IMX715-AAQR1, IMX515-AAQN, IMX415-AAQR  |
 | 9-20M       | IMX294CJK |
 | 21-30M       | IMX571BQR-J |

@@ -77,7 +77,7 @@ if __name__ == '__main__':
                         )
 
     # An example of usage for distance estimation
-    sr = Sensor(sensor_name='IMX482LQJ')
+    sr = Sensor(sensor_name='OS02C10')
     os = Optics(focal_length=4e-03)
     c = Camera(sensor=sr, optics=os)
     h = Human()
