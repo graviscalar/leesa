@@ -47,6 +47,7 @@ Accepted frame_type resolutions:
 | WSXGA+      | 1680, 1050        |   16:10  |
 | FHD         | 1920, 1080        |   16:9   |
 | WUXGA       | 1920, 1200        |   16:10  |
+| CMV2000     | 2048, 1088        |   17/9   |
 | QWXGA       | 2048, 1152        |   16:9   |
 | QXGA        | 2048, 1536        |   4:3    |
 | OS04E10     | 2048, 2048        |   1:1    |
@@ -61,10 +62,14 @@ Accepted frame_type resolutions:
 | UWQHD       | 3440, 1440        |   21:9   |
 | 4K_UHD      | 3840, 2160        |   16:9   |
 | OS08C10     | 3872, 2192        |   16:9   |
+| CMV12000    | 4096, 3072        |   4:3    |
 | IMX294      | 4168, 2176        |   17:9   |
 | OS12D40     | 4512, 2512        |   17:9   |
+| CMV20000    | 5120, 3840        |   4:3    |
 | IMX571      | 6244, 4168        |   3:2    |
+| CMV50000    | 7920, 6004        |   4:3    |
 | IMX455      | 9568, 6380        |   3:2    |
+| CHR70M      | 10000, 7096       |   4:3    |
 
 
 ## Usage for demosaic chart creation
@@ -361,16 +366,17 @@ The output JSON file will be:
 
 Required parameters: focal length, sensor name or frame type with sensor diagonal size.
 
-Supported sensors:
+Supported Sony, Omnivision, Hamamatsu, AMS sensors:
 
 |resolution  | Sensors  |
 |------------|----------|
-| 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD, OS02C10, OS02G10, OS02H10, OS02N10, OS03B10, OV2718, OV2732, OV2735 |
-| 4-6M       | IMX664-AAQR1, IMX464LQR_LQR1, IMX347LQR, IMX178LQJ, IMX675-AAQR, IMX335LQN, OS04A10, OS04C10, OS04D10, OS04E10, OS04L, OS05A10, OS05A20, OS05B, OV4689 |
+| < 2M       | S13101, S14501 |
+| 2-3M       | IMX482LQJ, IMX662-AAQR, IMX462LQR, IMX327LQR, IMX307LQD, OS02C10, OS02G10, OS02H10, OS02N10, OS03B10, OV2718, OV2732, OV2735, CMV2000 |
+| 4-6M       | IMX664-AAQR1, IMX464LQR_LQR1, IMX347LQR, IMX178LQJ, IMX675-AAQR, IMX335LQN, OS04A10, OS04C10, OS04D10, OS04E10, OS04L, OS05A10, OS05A20, OS05B, OV4689, CMV4000 |
 | 7-8M       | IMX585-AAQJ1, IMX485LQJ_LQJ1, IMX678-AAQR1, IMX715-AAQR1, IMX515-AAQN, IMX415-AAQR, OS08A10, OS08A20, OS08C10  |
-| 9-20M      | IMX294CJK, OS12D40 |
+| 9-20M      | IMX294CJK, OS12D40, CMV12000, CMV20000 |
 | 21-30M     | IMX571BQR-J |
-| > 31M      | IMX455AQK-K  |
+| > 31M      | IMX455AQK-K, CMV50000, CHR70M |
 
 The 3 modes for estimation is used (parameter 'smode'):
 * 0 - estimation by the distance between eyes or 'eyes_d'

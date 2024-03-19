@@ -88,6 +88,22 @@ class SensorSony:
                    'link': 'https://www.ovt.com/wp-content/uploads/2023/07/OV2735-PB-v1.4-WEB.pdf'},
         'OV4689': {'resolution': 'IMX664', 'diagonal': 0.0, 'fps': 60, 'pixel_size': 3e-06,
                    'link': 'https://www.ovt.com/wp-content/uploads/2023/08/OV4689-PB-v1.8-WEB.pdf'},
+        'S13101': {'resolution': 'SXGA', 'diagonal': 0.0, 'fps': 146, 'pixel_size': 7.4e-06,
+                   'link': 'https://www.hamamatsu.com/content/dam/hamamatsu-photonics/sites/documents/99_SALES_LIBRARY/ssd/s13101_kmpd1151e.pdf'},
+        'S14501': {'resolution': 'SXGA', 'diagonal': 0.0, 'fps': 146, 'pixel_size': 7.4e-06,
+                   'link': 'https://www.hamamatsu.com/content/dam/hamamatsu-photonics/sites/documents/99_SALES_LIBRARY/ssd/s14501_kmpd1217e.pdf'},
+        'CMV2000': {'resolution': 'CMV2000', 'diagonal': 0.0, 'fps': 340, 'pixel_size': 5.5e-06,
+                   'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
+        'CMV4000': {'resolution': 'OS04E10', 'diagonal': 0.0, 'fps': 180, 'pixel_size': 5.5e-06,
+                    'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
+        'CMV12000': {'resolution': 'CMV12000', 'diagonal': 0.0, 'fps': 300, 'pixel_size': 5.5e-06,
+                    'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
+        'CMV20000': {'resolution': 'CMV20000', 'diagonal': 0.0, 'fps': 30, 'pixel_size': 6.4e-06,
+                     'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
+        'CMV50000': {'resolution': 'CMV50000', 'diagonal': 0.0, 'fps': 30, 'pixel_size': 4.6e-06,
+                     'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
+        'CHR70M': {'resolution': 'CHR70M', 'diagonal': 0.0, 'fps': 3, 'pixel_size': 3.1e-06,
+                     'link': 'https://ams.com/documents/20143/4421878/CMV2000_DS000734_6-00.pdf'},
     }
 
     def get_dict(self):
