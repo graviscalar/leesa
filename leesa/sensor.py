@@ -135,6 +135,7 @@ class Sensor:
             else:
                 self.s_h = sr['pixel_size'] * frame['h']
                 self.pixel_size = sr['pixel_size']
+            self.s_w = self.pixel_size * frame['w']
         else:
             if frame_type is None:
                 raise ValueError("The frame size must be non-empty.")
@@ -147,3 +148,4 @@ class Sensor:
             self.frame_width = frame['w']
             self.frame_height = frame['h']
             self.pixel_size = self.s_h / frame['h']
+            self.s_w = self.pixel_size * frame['w']

@@ -7,6 +7,7 @@ import itertools
 import numpy as np
 from leesa.image import *
 from leesa.tools import *
+from leesa.camera import *
 from datetime import datetime
 
 
@@ -445,5 +446,23 @@ class ODChart:
 
                         results.append(r)
                     i += 1
+
+        return results
+
+    def object_to_counting(self,
+                           dir_img: str = None,
+                           dir_json: str = None,
+                           dir_out: str = None,
+                           person_qy: int = 10,
+                           cam: Camera = None,
+                           ) -> list:
+        if dir_img is None:
+            raise ValueError("The image directory must be non-empty.")
+        if dir_json is None:
+            raise ValueError("The JSON directory must be non-empty.")
+        if cam is None:
+            raise ValueError("The Camera must be non-empty.")
+
+        results = []
 
         return results
