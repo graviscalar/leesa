@@ -6,6 +6,13 @@ import numpy as np
 import math
 
 
+class CamAngle:
+    def __init__(self, pitch: float = 0, roll: float = 0, yaw: float = 0):
+        self.pitch = pitch
+        self.roll = roll
+        self.yaw = yaw
+
+
 class Point2D:
     """The point in 2D cartesian space.
 
@@ -88,8 +95,6 @@ class Point3D:
         return self.x == other.x and self.y == other.y and self.z == other.z
 
 
-
-
 def points2d_distance(a, b):
     """Distance between 2 points in 2D space.
 
@@ -102,7 +107,6 @@ def points2d_distance(a, b):
     x = a.x - b.x
     y = a.y - b.y
     return np.sqrt((x * x) + (y * y))
-
 
 
 class Line3D:
@@ -129,8 +133,6 @@ class Line3D:
         self.pc_a = temp.x
         self.pc_b = temp.y
         self.pc_c = temp.z
-
-
 
 
 class Plane:
@@ -162,13 +164,6 @@ class Plane:
     def get_x(self, y, z):
         return (- self.b * y - self.c * z - self.d) / self.a
 
-    # def get_plane_from_points(self, p_1, p_2, p_3):
-    #     self.a = (p_2.y * p_3.z) - (p_3.y * p_2.z) - (p_1.y * (p_3.z - p_2.z)) + (p_1.z * (p_3.y - p_2.y))
-    #     self.b = p_1.x * (p_3.z - p_2.z) - (p_2.x * p_3.z - p_3.x * p_2.z) + p_1.z * (p_2.x - p_3.x)
-    #     self.c = p_1.x * (p_2.y - p_3.y) - p_1.y * (p_2.x - p_3.x) + (p_2.x * p_3.y - p_3.x * p_2.y)
-    #     self.d = -1 * p_1.x * (p_2.y * p_3.z - p_3.y * p_2.z) + p_1.y * (p_2.x * p_3.z - p_3.x * p_2.z)
-    #     - p_1.z * (p_2.x * p_3.y - p_3.x * p_2.y)
-
     def get_plane_from_points(self, a, b, c):
         self.a = ((b.y - a.y) * (c.z - a.z)) - ((c.y - a.y) * (b.z - a.z))
         self.b = ((b.z - a.z) * (c.x - a.x)) - ((c.z - a.z) * (b.x - a.x))
@@ -178,6 +173,14 @@ class Plane:
 
 def vec3d_sub(a, b):
     return Point3D(a.x - b.x, a.y - b.y, a.z - b.z)
+
+
+def vec3d_dot(a: Point3D, b: Point3D):
+    return a.x * b.x + a.y * b.y + a.z * b.z
+
+
+def vec3d_cross(a: Point3D, b: Point3D) -> Point3D:
+    return Point3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
 
 
 def intersection3d_plane_line(plane, line):
@@ -225,4 +228,46 @@ def intersection2d_line_line(p1=Point2D(0, 0), p2=Point2D(0, 0), p3=Point2D(0, 0
     return ret, point
 
 
+#  polyhedras
 
+class SquarePyramid:
+    """The Square pyramid in 3D cartesian space.
+
+   A-----B
+   |\   /|
+   | \ / |
+   |  S  |
+   | / \ |
+   |/   \|
+   C-----D
+
+    Arguments:
+      a: a coordinate
+      b: b coordinate
+      c: c coordinate
+      d: d coordinate
+      s: s coordinate
+    """
+
+    def __init__(self, a: Point3D, b: Point3D, c: Point3D, d: Point3D, s: Point3D):
+        self.a = a
+        self.b = b
+        self.c = c
+        self.d = d
+        self.s = s
+
+
+def square_pyramid_from_fov(s, fov_vertical, fov_horizontal, pyramid_height: float = 10) -> SquarePyramid:
+    # Square triangle oriented to vector (0, 1, 0)
+    # A calculation
+    a = Point3D(x=s.x - pyramid_height * math.tan(fov_horizontal / 2),
+                y=s.y + pyramid_height,
+                z=s.z + pyramid_height * math.tan(fov_vertical / 2))
+    # B calculation
+    b = Point3D(x=-a.x, y=a.y, z=a.z)
+    # C calculation
+    c = Point3D(x=a.x, y=a.y, z= 2 * s.z - a.z)
+    # D calculation
+    d = Point3D(x=b.x, y=b.y, z=c.z)
+
+    return SquarePyramid(a=a, b=b, c=c, d=d, s=s)

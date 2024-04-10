@@ -5,6 +5,7 @@ from leesa.camera import *
 from leesa.human import *
 import time
 
+
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
 
