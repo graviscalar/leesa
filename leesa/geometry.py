@@ -94,6 +94,12 @@ class Point3D:
     def __eq__(self, other):
         return self.x == other.x and self.y == other.y and self.z == other.z
 
+    def sub(self, a):
+        return Point3D(self.x - a.x, self.y - a.y, self.z - a.z)
+
+    def add(self, a):
+        return Point3D(self.x + a.x, self.y + a.y, self.z + a.z)
+
 
 def points2d_distance(a, b):
     """Distance between 2 points in 2D space.
@@ -111,28 +117,58 @@ def points2d_distance(a, b):
 
 class Line3D:
     """The line in 3D cartesian space.
+
+    parametric form ----------------------------------
+    x = x0 + at
+    y = y0 + bt
+    z = z0 + ct
+
+    a, b, c from directional vector (colinear to line)
+    p = ai + bj + ck
+
+    canonical form -----------------------------------
+    x - x0    y - y0   z - z0
+    ------ = ------- = ------
+      a         b        c
     """
 
-    def __init__(self):
-        self.pc_x_0 = 0  # x = x0 + at = x0 + (x1-x0)t
-        self.pc_y_0 = 0  # y = y0 + bt = y0 + (y1-y0)t
-        self.pc_z_0 = 0  # z = z0 + ct = z0 + (z1-z0)t
-        self.pc_a = 0
-        self.pc_b = 0
-        self.pc_c = 0
-        self.p_0 = Point3D(0, 0, 0)  # point p0 on the line
-        self.p_1 = Point3D(0, 0, 0)  # point p1 on the line
+    def __init__(self, x0: float = 0, y0: float = 0, z0: float = 0, a: float = 0, b: float = 0, c: float = 0):
+        self.x0 = x0  # x = x0 + at = x0 + (x1-x0)t
+        self.y0 = y0  # y = y0 + bt = y0 + (y1-y0)t
+        self.z0 = z0  # z = z0 + ct = z0 + (z1-z0)t
+        self.a = a
+        self.b = b
+        self.c = c
+        self.p0 = Point3D(0, 0, 0)  # point p0 on the line
+        self.p1 = Point3D(0, 0, 0)  # point p1 on the line
 
-    def get_parametric_equation(self, p_0, p_1):
-        self.p_0 = p_0
-        self.p_1 = p_1
-        self.pc_x_0 = p_0.x
-        self.pc_y_0 = p_0.y
-        self.pc_z_0 = p_0.z
-        temp = vec3d_sub(p_1, p_0)
-        self.pc_a = temp.x
-        self.pc_b = temp.y
-        self.pc_c = temp.z
+    def get_parametric_equation(self, p0, p1):
+        self.p0 = p0
+        self.p1 = p1
+        self.x0 = p0.x
+        self.y0 = p0.y
+        self.z0 = p0.z
+        temp = vec3d_sub(p1, p0)
+        self.a = temp.x
+        self.b = temp.y
+        self.c = temp.z
+
+    def get_point_by_t(self, t) -> Point3D:
+        return Point3D(self.x0 + t * self.a, self.y0 + t * self.b, self.z0 + t * self.c)
+
+
+def line3d_intersection(a: Line3D, b: Line3D):
+    i = None
+    c = np.array([[b.x0 - a.x0, b.y0 - a.y0, b.z0 - a.z0], [a.a, a.b, a.c], [b.a, b.b, b.c]])
+    d = np.linalg.det(c)
+    c = np.array([[a.a, a.b, a.c], [b.a, b.b, b.c]])
+    r = np.linalg.matrix_rank(c)
+    # print(d, r)
+    if d == 0 and r == 2:
+        t = (b.x0 * b.b + b.a * a.y0 - b.a * b.y0 - a.x0 * b.b) / (a.a * b.b - b.a * a.b)
+        i = a.get_point_by_t(t)
+
+    return i
 
 
 class Plane:
@@ -170,6 +206,9 @@ class Plane:
         self.c = ((b.x - a.x) * (c.y - a.y)) - ((c.x - a.x) * (b.y - a.y))
         self.d = -((self.a * a.x) + (self.b * a.y) + (self.c * a.z))
 
+    def get_normal(self) -> Point3D:
+        return Point3D(self.a, self.b, self.c)
+
 
 def vec3d_sub(a, b):
     return Point3D(a.x - b.x, a.y - b.y, a.z - b.z)
@@ -181,6 +220,41 @@ def vec3d_dot(a: Point3D, b: Point3D):
 
 def vec3d_cross(a: Point3D, b: Point3D) -> Point3D:
     return Point3D(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z, a.x * b.y - a.y * b.x)
+
+
+def intersection_plane_plane(a: Plane, b: Plane):
+    l = None
+    # verify determinants
+    cx = np.array([[a.b, a.c], [b.b, b.c]])
+    dx = np.linalg.det(cx)
+    cy = np.array([[a.c, a.a], [b.c, b.a]])
+    dy = np.linalg.det(cy)
+    cz = np.array([[a.a, a.b], [b.a, b.b]])
+    dz = np.linalg.det(cz)
+    if dx != 0 or dy != 0 or dz != 0:
+        # calculating line vector
+        an = a.get_normal()
+        bn = b.get_normal()
+        lv = vec3d_cross(an, bn)  # line vector
+        # calculating point on line
+        # selecting the right determinant
+        if dx != 0:
+            a1 = cx
+            b1 = np.array([-a.d, -b.d])
+            p = np.linalg.solve(a1, b1)  # point on the line
+            l = Line3D(x0=0, y0=p[0], z0=p[1], a=lv.x, b=lv.y, c=lv.z)
+        elif dy != 0:
+            a1 = cy
+            b1 = np.array([-a.d, -b.d])
+            p = np.linalg.solve(a1, b1)  # point on the line
+            l = Line3D(x0=p[0], y0=0, z0=p[1], a=lv.x, b=lv.y, c=lv.z)
+        elif dz != 0:
+            a1 = cz
+            b1 = np.array([-a.d, -b.d])
+            p = np.linalg.solve(a1, b1)  # point on the line
+            l = Line3D(x0=p[0], y0=p[1], z0=0, a=lv.x, b=lv.y, c=lv.z)
+
+    return l
 
 
 def intersection3d_plane_line(plane, line):
@@ -255,9 +329,19 @@ class SquarePyramid:
         self.c = c
         self.d = d
         self.s = s
+        self.sca = Plane()
+        self.sca.get_plane_from_points(s, c, a)
+        self.sab = Plane()
+        self.sab.get_plane_from_points(s, a, b)
+        self.sbd = Plane()
+        self.sbd.get_plane_from_points(s, b, d)
+        self.sdc = Plane()
+        self.sdc.get_plane_from_points(s, d, c)
 
 
-def square_pyramid_from_fov(s, fov_vertical, fov_horizontal, pyramid_height: float = 10) -> SquarePyramid:
+def square_pyramid_from_fov(s, fov_vertical, fov_horizontal,
+                            pyramid_height: float = 50,
+                            angle_pitch: float = 0) -> SquarePyramid:
     # Square triangle oriented to vector (0, 1, 0)
     # A calculation
     a = Point3D(x=s.x - pyramid_height * math.tan(fov_horizontal / 2),
@@ -266,8 +350,41 @@ def square_pyramid_from_fov(s, fov_vertical, fov_horizontal, pyramid_height: flo
     # B calculation
     b = Point3D(x=-a.x, y=a.y, z=a.z)
     # C calculation
-    c = Point3D(x=a.x, y=a.y, z= 2 * s.z - a.z)
+    c = Point3D(x=a.x, y=a.y, z=2 * s.z - a.z)
     # D calculation
     d = Point3D(x=b.x, y=b.y, z=c.z)
+    # Pitch or X rotation
+    a = rotation_matrix_x(a=a, angle=angle_pitch, c=s)
+    b = rotation_matrix_x(a=b, angle=angle_pitch, c=s)
+    c = rotation_matrix_x(a=c, angle=angle_pitch, c=s)
+    d = rotation_matrix_x(a=d, angle=angle_pitch, c=s)
 
     return SquarePyramid(a=a, b=b, c=c, d=d, s=s)
+
+
+# rotations with simple basis translation
+
+def rotation_matrix_x(a: Point3D, angle: float, c: Point3D) -> Point3D:
+    co = math.cos(math.radians(angle))
+    si = math.sin(math.radians(angle))
+    b = a.sub(a=c)
+    m1 = [b.x, b.y, b.z]
+    # x rotate
+    m2 = [[1, 0, 0],
+          [0, co, -si],
+          [0, si, co]]
+    b = np.dot(m1, m2)
+    return Point3D(b[0], b[1], b[2]).add(a=c)
+
+
+def rotation_matrix_y(a: Point3D, angle: float, c: Point3D) -> Point3D:
+    co = math.cos(math.radians(angle))
+    si = math.sin(math.radians(angle))
+    b = a.sub(a=c)
+    m1 = [b.x, b.y, b.z]
+    # y rotate
+    m2 = [[co, 0, si],
+          [0, 1, 0],
+          [-si, 0, co]]
+    b = np.dot(m1, m2)
+    return Point3D(b[0], b[1], b[2]).add(a=c)

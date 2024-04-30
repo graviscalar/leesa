@@ -96,5 +96,6 @@ if __name__ == '__main__':
     r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2)
     print(r)
 
+
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
