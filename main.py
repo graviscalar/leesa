@@ -5,7 +5,6 @@ from leesa.camera import *
 from leesa.human import *
 import time
 
-
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
 
@@ -95,7 +94,6 @@ if __name__ == '__main__':
     print(r)
     r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2)
     print(r)
-
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
