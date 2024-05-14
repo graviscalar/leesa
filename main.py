@@ -94,6 +94,13 @@ if __name__ == '__main__':
     print(r)
     r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2)
     print(r)
+    # An example of usage for pixel size estimation
+    r = h.distance_to_pixels(distance=0.5, cam=c, mode=0)
+    print('distance between eyes in pixels = ', r)
+    r = h.distance_to_pixels(distance=0.5, cam=c, mode=1)
+    print('face width in pixels = ', r)
+    r = h.distance_to_pixels(distance=0.5, cam=c, mode=2)
+    print('human height in pixels = ', r)
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))

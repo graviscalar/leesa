@@ -306,7 +306,7 @@ def intersection2d_line_line(p1=Point2D(0, 0), p2=Point2D(0, 0), p3=Point2D(0, 0
 
 
 class Trapezoid:
-    """The Square pyramid in 3D cartesian space.
+    """The trapezoid in 3D cartesian space.
 
    A-----B
    |     |
@@ -330,13 +330,24 @@ class Trapezoid:
         self.b = b
         self.c = c
         self.d = d
-
+        self.ca = Line3D()
+        self.ca.get_parametric_equation(c, a)
+        self.ab = Line3D()
+        self.ab.get_parametric_equation(a, b)
+        self.bd = Line3D()
+        self.bd.get_parametric_equation(b, d)
+        self.dc = Line3D()
+        self.dc.get_parametric_equation(d, c)
 
     def create_from_lines(self, ca: Line3D, ab: Line3D, bd: Line3D, dc: Line3D):
         self.c = line3d_intersection(a=ca, b=dc)
         self.a = line3d_intersection(a=ca, b=ab)
         self.b = line3d_intersection(a=ab, b=bd)
         self.d = line3d_intersection(a=bd, b=dc)
+        self.ca = ca
+        self.ab = ab
+        self.bd = bd
+        self.dc = dc
 
 
 class SquarePyramid:

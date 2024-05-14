@@ -4,12 +4,12 @@ import PIL.ImageFont
 import json
 import datetime
 import itertools
-import numpy as np
 from leesa.image import *
 from leesa.tools import *
 from leesa.camera import *
 from datetime import datetime
-
+import random
+from leesa.human import *
 
 class ODChart:
     """
@@ -449,13 +449,14 @@ class ODChart:
 
         return results
 
-    def object_to_counting(self,
-                           dir_img: str = None,
-                           dir_json: str = None,
-                           dir_out: str = None,
-                           person_qy: int = 10,
-                           cam: Camera = None,
-                           ) -> list:
+    def object_to_crowd3d(self,
+                          dir_img: str = None,
+                          dir_json: str = None,
+                          dir_out: str = None,
+                          cam: Camera = None,
+                          person_qy: int = 10,
+                          distance_maximum=50
+                          ) -> list:
         if dir_img is None:
             raise ValueError("The image directory must be non-empty.")
         if dir_json is None:
@@ -464,5 +465,108 @@ class ODChart:
             raise ValueError("The Camera must be non-empty.")
 
         results = []
+
+        # create a FOV pyramid
+        sp = square_pyramid_from_fov(s=Point3D(0, 0, cam.altitude),
+                                     fov_vertical=cam.fov_vertical,
+                                     fov_horizontal=cam.fov_horizontal,
+                                     angle_pitch=cam.angle.pitch)
+        # ground plane
+        fl = Plane()
+        fl.get_plane_from_points(Point3D(0, 0, 0), Point3D(-10, 10, 0), Point3D(10, 10, 0))
+        # intersection between ground plane and FOV pyramid
+        l_ca = intersection_plane_plane(sp.sca, fl)
+        # the line AB must exist in the front of camera but not behind
+        l_ab = Line3D()
+        if cam.angle.pitch > math.degrees(cam.fov_vertical/2):
+            l_ab = intersection_plane_plane(sp.sab, fl)
+        else:
+            l_ab.get_parametric_equation(Point3D(-10, distance_maximum, 0), Point3D(10, distance_maximum, 0))
+
+        l_bd = intersection_plane_plane(sp.sbd, fl)
+        l_dc = intersection_plane_plane(sp.sdc, fl)
+        # the polygon or trapezoid as result of the intersection between FOV pyramid  and floor plane
+        tr = Trapezoid()
+        tr.create_from_lines(ca=l_ca, ab=l_ab, bd=l_bd, dc=l_dc)
+        # estimate the all available positions inside trapezoid for human
+        fb_w = 0.5  # human sholder to shoulder width
+        fb_d = 0.3  # human chest depth
+        #
+        # A--E--G-----------B
+        #  \ |  |          /
+        #   \|  |         /
+        #    F--+--------J
+        #     \ |       /
+        #      \|      /
+        #       C-----D
+        t = tr.a
+        m = []
+        while fb_w <= (t.y - tr.c.y):
+            g = Point3D(tr.c.x, t.y, t.z)
+            ae = (g.x - t.x) * fb_d / (g.y - tr.c.y)
+            f = Point3D(t.x + ae, t.y - fb_w, t.z)
+            j1 = Point3D(f.x + 1, f.y, f.z)
+            fj1 = Line3D()
+            fj1.get_parametric_equation(f, j1)
+            j = line3d_intersection(a=fj1, b=tr.bd)
+            l = j.x - f.x
+            x = f.x
+            while l >= fb_w:
+                m.append(Point3D(x, f.y, f.z))
+                x += fb_w
+                l -= fb_w
+
+            t = f
+        # randomly selecting positions
+        if person_qy > len(m):
+            person_qy = len(m)
+        p = sorted(random.sample(range(len(m)), person_qy))
+
+        # get the pairs of image and JSON
+        result, pairs = get_image_json_pair_dir(directory_img=dir_img, pattern_img=['*.png', '*.jpg'],
+                                                directory_json=dir_json, pattern_json=['*.json'])
+        # create a dictionary for fast search
+        pairs_d = dict()
+        for e in pairs:
+            fp = open(e[1], 'r')
+            img_json = json.load(fp)
+            fp.close()
+            for o in img_json:
+                if 'angle_pitch' in o:
+                    if o['angle_pitch'] in pairs_d:
+                        pairs_d[o['angle_pitch']].append(e)
+                    else:
+                        pairs_d[o['angle_pitch']] = [e]
+
+        img_chart = PIL.Image.new(mode='RGB', size=(self.frame['w'], self.frame['h']), color=self.color_background)
+        # start from the most distant people
+        for i in p:
+            # estimate angle between human and camera
+            uv = cam.altitude - 1.72
+            if uv < 0:
+                uv = 0
+            tv = m[i].y
+            angle = int(math.degrees(math.atan(uv/tv)) / 10) * 10
+            # print(angle)
+            # get the image with a proper angle
+            # simple method, change it to random in future
+            if angle > 90:
+                angle = 90
+            pair = pairs_d[angle]
+            img = PIL.Image.open(pair[0])
+            fp = open(pair[1], 'r')
+            img_json = json.load(fp)
+            fp.close()
+            h = Human()
+            distance = m[i].y
+
+            for o in img_json:
+                if o['obj'] == 'figure':
+                    px = h.distance_to_pixels(distance=distance, mode=2)
+                    cs = px / o['h']
+                    w = o['h'] * cs
+                    img_crop = img.crop((o['x'], o['y'], o['x'] + o['w'], o['y'] + o['h']))
+                    img = img_crop.resize((w, h))
+                    # img_chart.paste(img, (x, y))
 
         return results

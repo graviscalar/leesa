@@ -1,5 +1,5 @@
 [
-	{"obj":"face", "x": 1238, "y": 36, "w": 316, "h": 370, "face_w": 192, "eyes_d": 86},
-	{"obj":"figure", "x": 968, "y": 0, "w": 1024, "h": 2560},
-	{"obj":"head_shoulders", "x": 1088, "y": 18, "w": 652, "h": 750}
+	{"obj":"face", "x": 198, "y": 12, "w": 156, "h": 227, "face_w": 116, "eyes_d": 58},
+	{"obj":"figure", "x": 7, "y": 8, "w": 454, "h": 1508, "angle_pitch": 20},
+	{"obj":"head_shoulders", "x": 96, "y": 10, "w": 352, "h": 468}
 ]
