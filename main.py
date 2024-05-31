@@ -4,6 +4,10 @@ from leesa.bayer import *
 from leesa.camera import *
 from leesa.human import *
 import time
+from leesa.color import *
+from leesa.geometry import *
+from leesa.objwf import *
+from leesa.edge import *
 
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
@@ -77,7 +81,7 @@ if __name__ == '__main__':
                         )
 
     # An example of usage for distance estimation
-    sr = Sensor(sensor_name='OS02C10')
+    sr = Sensor(sensor_name='IMX482LQJ')
     os = Optics(focal_length=4e-03)
     c = Camera(sensor=sr, optics=os)
     h = Human()
@@ -95,11 +99,11 @@ if __name__ == '__main__':
     r = h.distance_to_focal(human_h=4672, cam=c, distance=0.3, mode=2)
     print(r)
     # An example of usage for pixel size estimation
-    r = h.distance_to_pixels(distance=0.5, cam=c, mode=0)
+    r = h.distance_to_pixels(distance=0.3, cam=c, mode=0)
     print('distance between eyes in pixels = ', r)
-    r = h.distance_to_pixels(distance=0.5, cam=c, mode=1)
+    r = h.distance_to_pixels(distance=0.3, cam=c, mode=1)
     print('face width in pixels = ', r)
-    r = h.distance_to_pixels(distance=0.5, cam=c, mode=2)
+    r = h.distance_to_pixels(distance=0.3, cam=c, mode=2)
     print('human height in pixels = ', r)
 
     time_end = time.time()  # Log the time

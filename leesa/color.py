@@ -2,18 +2,6 @@ import numpy as np
 from PIL import Image
 
 
-def image_open_np(fn: str = None) -> np.ndarray:
-    img = Image.open(fn)
-    dt = np.array(img).astype(float)
-    return dt
-
-
-def image_save_np(img: np.ndarray = None, fn: str = None, mode: str = 'RGB') -> None:
-    d = Image.fromarray(img).convert(mode)
-    d.save(fn)
-    return None
-
-
 def image_rgb_to_lum_itu7096(img: np.ndarray = None) -> np.ndarray:
     """
     Convert RGB values to luminance values as described in the ITU-R  BT.709-6

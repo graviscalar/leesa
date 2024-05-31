@@ -1,4 +1,6 @@
 import os
+import numpy as np
+import PIL.Image
 
 
 class Colors:
@@ -77,3 +79,29 @@ def img_save(img, image_name: str = None) -> None:
     if image_name is not None:
         os.makedirs(os.path.dirname(image_name), exist_ok=True)
         img.save(image_name)
+
+
+def image_open_np(fn: str = None) -> np.ndarray:
+    img = PIL.Image.open(fn)
+    dt = np.array(img).astype(float)
+    return dt
+
+
+def image_save_np(img: np.ndarray = None, fn: str = None, mode: str = 'RGB') -> None:
+    d = PIL.Image.fromarray(img).convert(mode)
+    d.save(fn)
+    return None
+
+
+
+# convolution
+# # Define a 2x2 matrix
+# matrix = np.array([[1, 1], [-1, -1]])  # Replace a, b, c, d with your desired values
+#
+# c = np.zeros(image_array.shape)
+#
+# for y in range(c.shape[0]):
+#     if y < c.shape[0] - matrix.shape[0]:
+#         for x in range(c.shape[1]):
+#             if x < c.shape[1] - matrix.shape[1]:
+#                 c[y, x] = np.sum(np.multiply(image_array[y:y + matrix.shape[0], x: x + matrix.shape[1]], matrix))
