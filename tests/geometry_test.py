@@ -41,6 +41,15 @@ class TestSum(unittest.TestCase):
         ground = Plane(1, 3, 4, -9)
         self.assertEqual(ret, ground, "Should be Plane(1, 3, 4, -9)")
 
+    def test_triangle_area(self):
+        a = Point3D(-1, 0, 0)
+        b = Point3D(0, 2, 1)
+        c = Point3D(1, -1, 2)
+        ret = triangle_area(a, b, c)
+        ground = 3.5355339059327355
+        self.assertEqual(ret, ground, "Should be 3.5355339059327355")
+
+
 
 if __name__ == '__main__':
     unittest.main()

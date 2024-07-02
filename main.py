@@ -4,10 +4,6 @@ from leesa.bayer import *
 from leesa.camera import *
 from leesa.human import *
 import time
-from leesa.color import *
-from leesa.geometry import *
-from leesa.objwf import *
-from leesa.edge import *
 
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
@@ -82,12 +78,12 @@ if __name__ == '__main__':
 
     # An example of usage for distance estimation
     sr = Sensor(sensor_name='IMX482LQJ')
-    os = Optics(focal_length=4e-03)
+    os = Optics(focal_length=2.8e-03)
     c = Camera(sensor=sr, optics=os)
     h = Human()
     r = h.camera_to_distance(eyes_d=146, cam=c, mode=0)
     print(r)
-    r = h.camera_to_distance(face_w=342, cam=c, mode=1)
+    r = h.camera_to_distance(face_w=5, cam=c, mode=1)
     print(r)
     r = h.camera_to_distance(human_h=4672, cam=c, mode=2)
     print(r)

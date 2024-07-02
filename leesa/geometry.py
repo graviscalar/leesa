@@ -115,6 +115,21 @@ def points2d_distance(a, b):
     return np.sqrt((x * x) + (y * y))
 
 
+def points3d_distance(a: Point3D, b: Point3D) -> float:
+    """Distance between 2 points in 2D space.
+
+    Arguments:
+      a: 3D point
+      b: 3D point
+    Returns:
+      A distance between 2 points in 3D space.
+    """
+    x = a.x - b.x
+    y = a.y - b.y
+    z = a.z - b.z
+    return np.sqrt((x * x) + (y * y) + (z * z))
+
+
 class Line3D:
     """The line in 3D cartesian space.
 
@@ -434,3 +449,20 @@ def rotation_matrix_y(a: Point3D, angle: float, c: Point3D) -> Point3D:
           [-si, 0, co]]
     b = np.dot(m1, m2)
     return Point3D(b[0], b[1], b[2]).add(a=c)
+
+
+def triangle_area(a: Point3D, b: Point3D, c: Point3D) -> float:
+    da = points3d_distance(a, b)
+    db = points3d_distance(b, c)
+    dc = points3d_distance(c, a)
+
+    s = (da + db + dc) / 2
+    area = math.sqrt(s * (s - da) * (s - db) * (s - dc))
+    return area
+
+
+def trapezoid_area(a: Point3D, b: Point3D, c: Point3D, d: Point3D) -> float:
+    area_t0 = triangle_area(a, b, c)
+    area_t1 = triangle_area(b, c, d)
+    area = area_t0 + area_t1
+    return area
