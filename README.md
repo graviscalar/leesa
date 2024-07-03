@@ -14,7 +14,8 @@ Contents
 * [Data preparation for human detection](#data-preparation-for-human-detection)
 * [Usage for face detection chart](#usage-for-face-detection-chart)
 * [Usage for human detection chart](#usage-for-human-detection-chart)
-* [Estimation of distance to human](#estimation-of-distance-to-human) 
+* [Estimation of distance to human](#estimation-of-distance-to-human)
+* [Estimation of intersection between floor and FOV](#estimation-of-intersection-between-floor-and-fov) 
 
 ## Why?
 
@@ -414,4 +415,26 @@ r = h.distance_to_pixels(distance=0.5, cam=c, mode=1)
 print('face width in pixels = ', r)
 r = h.distance_to_pixels(distance=0.5, cam=c, mode=2)
 print('human height in pixels = ', r)
+```
+
+## Estimation of intersection between floor and FOV
+
+Required parameters: focal length, sensor name or frame type with sensor diagonal size, camera altitude, and camera pitch angle.
+
+Image below shows the camera pitch angle and altitude
+
+![camera pitch angle and altitude](help/img/fov_intersection_angle.png)
+
+An example of the intersection estimation between floor and camera FOV
+
+``` shell
+from leesa.camera import *
+
+sr = Sensor(sensor_name='IMX662-AAQR')
+os = Optics(focal_length=2.8e-03)
+c = Camera(sensor=sr, optics=os, angle=CamAngle(pitch=45), altitude=4)
+distance_maximum = 50 # the maximum distance visible if the FOV do not intersect the ground with upper FOV plane
+
+r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum)
+print('Area of FOV intersection with floor = ', r[0]['area'])
 ```

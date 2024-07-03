@@ -4,6 +4,7 @@ from leesa.bayer import *
 from leesa.camera import *
 from leesa.human import *
 import time
+from leesa.geometry import *
 
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
@@ -76,9 +77,13 @@ if __name__ == '__main__':
                         gap_y=8
                         )
 
-    # An example of usage for distance estimation
-    sr = Sensor(sensor_name='IMX482LQJ')
-    os = Optics(focal_length=2.8e-03)
+    An
+    example
+    of
+    usage
+    for distance estimation
+        sr = Sensor(sensor_name='IMX415-AAQR')
+    os = Optics(focal_length=32e-03)
     c = Camera(sensor=sr, optics=os)
     h = Human()
     r = h.camera_to_distance(eyes_d=146, cam=c, mode=0)
@@ -101,6 +106,14 @@ if __name__ == '__main__':
     print('face width in pixels = ', r)
     r = h.distance_to_pixels(distance=0.3, cam=c, mode=2)
     print('human height in pixels = ', r)
+
+    # An example of usage for FOV floor trapezoid estimation
+    sr = Sensor(sensor_name='IMX662-AAQR')
+    os = Optics(focal_length=2.8e-03)
+    c = Camera(sensor=sr, optics=os, angle=CamAngle(pitch=45), altitude=4)
+    distance_maximum = 50  # the maximum distance visible if the FOV do not intersect the ground with upper FOV plane
+    r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum)
+    print('Area of FOV intersection with floor = ', r[0]['area'])
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
