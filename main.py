@@ -77,12 +77,8 @@ if __name__ == '__main__':
                         gap_y=8
                         )
 
-    An
-    example
-    of
-    usage
-    for distance estimation
-        sr = Sensor(sensor_name='IMX415-AAQR')
+    # An example of usage for distance estimation
+    sr = Sensor(sensor_name='IMX415-AAQR')
     os = Optics(focal_length=32e-03)
     c = Camera(sensor=sr, optics=os)
     h = Human()
@@ -110,10 +106,12 @@ if __name__ == '__main__':
     # An example of usage for FOV floor trapezoid estimation
     sr = Sensor(sensor_name='IMX662-AAQR')
     os = Optics(focal_length=2.8e-03)
-    c = Camera(sensor=sr, optics=os, angle=CamAngle(pitch=45), altitude=4)
+    c = Camera(sensor=sr, optics=os, angle=CamAngle(pitch=75), altitude=4)
     distance_maximum = 50  # the maximum distance visible if the FOV do not intersect the ground with upper FOV plane
-    r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum)
+    # use the debug_obj for creating the 3D OBJ file for visual debugging the FOV intersection with a ground
+    r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum, debug_obj='c:/temp/fov.obj')
     print('Area of FOV intersection with floor = ', r[0]['area'])
+    print('Quantity of people in the area of FOV intersection with floor = ', r[1]['people_quantity'])
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))

@@ -6,6 +6,7 @@ import math
 from .geometry import *
 from .objwf import *
 
+
 class Camera:
     """The Sensor and Optics parameters.
 
@@ -59,7 +60,7 @@ class Camera:
         print()
 
 
-def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50) -> list:
+def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50, debug_obj: str = None) -> list:
     results = []
 
     if cam is None:
@@ -92,18 +93,52 @@ def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50) -> list:
     a['area'] = trapezoid_area(tr.a, tr.b, tr.c, tr.d)
     results.append(a)
 
-    # if debug_obj is not None:
-    #     ob = OBJExport()
-    #     ob.add_triangle('sca', sp.s, sp.c, sp.a)
-    #     ob.add_triangle('sab', sp.s, sp.a, sp.b)
-    #     ob.add_triangle('sbd', sp.s, sp.b, sp.d)
-    #     ob.add_triangle('sdc', sp.s, sp.d, sp.c)
+    # estimate the all available positions inside trapezoid for human
+    fb_w = 0.5  # human sholder to shoulder width
+    fb_d = 0.3  # human chest depth
     #
-    #     # ob.add_triangle('floor', Point3D(0,0,0), Point3D(-10,10,0), Point3D(10,10,0))
-    #     ob.add_line('ca', tr.c, tr.a)
-    #     ob.add_line('ab', tr.a, tr.b)
-    #     ob.add_line('bd', tr.b, tr.d)
-    #     ob.add_line('dc', tr.d, tr.c)
-    #     ob.save(debug_obj)
+    # A--E--G-----------B
+    #  \ |  |          /
+    #   \|  |         /
+    #    F--+--------J
+    #     \ |       /
+    #      \|      /
+    #       C-----D
+    t = tr.a
+    m = []
+    while fb_w <= (t.y - tr.c.y):
+        g = Point3D(tr.c.x, t.y, t.z)
+        ae = (g.x - t.x) * fb_d / (g.y - tr.c.y)
+        f = Point3D(t.x + ae, t.y - fb_w, t.z)
+        j1 = Point3D(f.x + 1, f.y, f.z)
+        fj1 = Line3D()
+        fj1.get_parametric_equation(f, j1)
+        j = line3d_intersection(a=fj1, b=tr.bd)
+        l = j.x - f.x
+        x = f.x
+        while l >= fb_w:
+            m.append(Point3D(x, f.y, f.z))
+            x += fb_w
+            l -= fb_w
+
+        t = f
+    a = dict()
+    a['people_quantity'] = len(m)
+    results.append(a)
+
+    if debug_obj is not None:
+        ob = OBJExport()
+        ob.add_triangle('fov_sca', sp.s, sp.c, sp.a)
+        ob.add_triangle('fov_sab', sp.s, sp.a, sp.b)
+        ob.add_triangle('fov_sbd', sp.s, sp.b, sp.d)
+        ob.add_triangle('fov_sdc', sp.s, sp.d, sp.c)
+
+        ob.add_poly('floor', Point3D(-10, -10, 0), Point3D(-10, 10, 0), Point3D(10, 10, 0), Point3D(10, -10, 0))
+
+        ob.add_line('fov_floor_ca', tr.c, tr.a)
+        ob.add_line('fov_floor_ab', tr.b, tr.a)
+        ob.add_line('fov_floor_bd', tr.b, tr.d)
+        ob.add_line('fov_floor_dc', tr.c, tr.d)
+        ob.save(debug_obj)
 
     return results

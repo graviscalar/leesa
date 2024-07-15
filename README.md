@@ -423,7 +423,7 @@ Required parameters: focal length, sensor name or frame type with sensor diagona
 
 Image below shows the camera pitch angle and altitude
 
-![camera pitch angle and altitude](help/img/fov_intersection_angle.png)
+![camera pitch angle and altitude](help/img/fov_intersection.png)
 
 An example of the intersection estimation between floor and camera FOV
 

@@ -9,6 +9,24 @@ class OBJExport():
         self.obj = []
         self.vc = 0
 
+    def add_poly(self, name: str, a: Point3D, b: Point3D, c: Point3D, d: Point3D):
+        self.obj.append("#")
+        self.obj.append("# object {0}".format(name))
+        self.obj.append("#")
+        self.obj.append("\n")
+        self.obj.append("v  {0:.4f} {1:.4f} {2:.4f}".format(a.x, a.y, a.z))
+        self.obj.append("v  {0:.4f} {1:.4f} {2:.4f}".format(b.x, b.y, b.z))
+        self.obj.append("v  {0:.4f} {1:.4f} {2:.4f}".format(c.x, c.y, c.z))
+        self.obj.append("v  {0:.4f} {1:.4f} {2:.4f}".format(d.x, d.y, d.z))
+        self.obj.append("# 4 vertices")
+        self.obj.append("\n")
+        self.obj.append("o {0}".format(name))
+        self.obj.append("g {0}".format(name))
+        self.obj.append("f {0} {1} {2} {3}".format(self.vc + 1, self.vc + 2, self.vc + 3, self.vc + 4))
+        self.obj.append("\n")
+        self.vc += 4
+
+
     def add_triangle(self, name: str, a: Point3D, b: Point3D, c: Point3D):
         self.obj.append("#")
         self.obj.append("# object {0}".format(name))
