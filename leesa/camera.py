@@ -106,10 +106,12 @@ def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50, debug_ob
     #       C-----D
     t = tr.a
     m = []
-    while fb_w <= (t.y - tr.c.y):
-        g = Point3D(tr.c.x, t.y, t.z)
-        ae = (g.x - t.x) * fb_d / (g.y - tr.c.y)
-        f = Point3D(t.x + ae, t.y - fb_w, t.z)
+    tang = (tr.c.x - tr.a.x) / (tr.a.y - tr.c.y)
+
+    while fb_d <= (t.y - tr.c.y):
+        # g = Point3D(tr.c.x, t.y, t.z)
+        ae = fb_d * tang
+        f = Point3D(t.x + ae, t.y - fb_d, t.z)
         j1 = Point3D(f.x + 1, f.y, f.z)
         fj1 = Line3D()
         fj1.get_parametric_equation(f, j1)
@@ -120,8 +122,8 @@ def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50, debug_ob
             m.append(Point3D(x, f.y, f.z))
             x += fb_w
             l -= fb_w
-
         t = f
+
     a = dict()
     a['people_quantity'] = len(m)
     results.append(a)
@@ -139,6 +141,14 @@ def fov_vs_ground_intersection(cam: Camera = None, distance_maximum=50, debug_ob
         ob.add_line('fov_floor_ab', tr.b, tr.a)
         ob.add_line('fov_floor_bd', tr.b, tr.d)
         ob.add_line('fov_floor_dc', tr.c, tr.d)
+
+        # save people positions
+        c = 0
+        for e in m:
+            ob.add_poly(str(c), e, Point3D(e.x + fb_w, e.y, e.z), Point3D(e.x + fb_w, e.y + fb_d, e.z),
+                        Point3D(e.x, e.y + fb_d, e.z))
+            c += 1
+
         ob.save(debug_obj)
 
     return results
