@@ -119,6 +119,11 @@ def image_warping_2d_2d(img_auto, json_auto, img_plate, img_dst):
             p1 = [x / p1_hom[2] for x in p1_hom[:-1]]
             img_a_1[int(p1[0]), int(p1[1])] = img_p_1[x, y]
 
+    directory = os.path.dirname(img_dst)
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        print("The directory {0} created".format(directory))
+
     img_a.save(img_dst)
 
 # convolution
