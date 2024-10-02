@@ -450,7 +450,7 @@ For example the JSON data will be:
 ``` shell
 {"obj":"car_plate", "a": [502, 388], "b": [652, 384], "c": [500, 464], "d": [650, 461]}
 ```
-An image below explains the JSON fields for Face detection.
+An image below explains the JSON fields for Licence Plate a, b, c, d coordinates.
 
 ![face parametrs](help/img/car_plate.png)
 
