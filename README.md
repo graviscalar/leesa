@@ -16,6 +16,7 @@ Contents
 * [Usage for human detection chart](#usage-for-human-detection-chart)
 * [Estimation of distance to human](#estimation-of-distance-to-human)
 * [Estimation of intersection between floor and FOV](#estimation-of-intersection-between-floor-and-fov) 
+* [Transfer license plate to the car](#transfer-license-plate-to-the-car)
 
 ## Why?
 
@@ -25,6 +26,7 @@ I wanted a tool that allows you to:
 + Test the performance of your edge detection algorithm for a rgb image.
 + Test the performance of your human detection algorithm for a rgb image.
 + Estimate the distance between human detection and camera.
++ Improve ANPR dataset
 
 ## Resolution
 
@@ -437,4 +439,40 @@ distance_maximum = 50 # the maximum distance visible if the FOV do not intersect
 
 r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum)
 print('Area of FOV intersection with floor = ', r[0]['area'])
+print('Quantity of people in the area of FOV intersection with floor = ', r[1]['people_quantity'])
+```
+## Transfer license plate to the car
+
+Rename your image with car (for example: sample_0.jpg). Create the JSON file with same name (for example: sample_0.json).
+Add to JSON file the a, b, c and d coordinates of the licence plate.
+
+For example the JSON data will be:
+``` shell
+{"obj":"car_plate", "a": [502, 388], "b": [652, 384], "c": [500, 464], "d": [650, 461]}
+```
+An image below explains the JSON fields for Face detection.
+
+![face parametrs](help/img/car_plate.png)
+
+An image with original licence plate
+
+![face parametrs](help/img/plate_in.jpg)
+
+An image with licence plate
+
+![face parametrs](help/img/plate.png)
+
+An image with transfered licence plate
+
+![face parametrs](help/img/plate_out.jpg)
+
+An example of the Transfer license plate to the car
+
+``` shell
+from leesa.image import *
+
+image_warping_2d_2d(img_auto='tests/data_sample/sample_5/sample_2.jpg',
+                    json_auto= 'tests/data_sample/sample_5/sample_2.json',
+                    img_plate='tests/data_sample/sample_5/USACalifornia-1963-M44149-26_Jul_2024-15_41_36.png',
+                    img_dst= 'temp/img/1.png')
 ```

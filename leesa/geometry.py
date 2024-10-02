@@ -466,3 +466,19 @@ def trapezoid_area(a: Point3D, b: Point3D, c: Point3D, d: Point3D) -> float:
     area_t1 = triangle_area(b, c, d)
     area = area_t0 + area_t1
     return area
+
+
+def warping_2d_2d_matrix(src, dst):
+    x, y, u, v = src[:, 0], src[:, 1], dst[:, 0], dst[:, 1]
+    a = np.zeros((9, 9))
+    j = 0
+    for i in range(4):
+        a[j, :] = np.array([-x[i], -y[i], -1, 0, 0, 0, x[i] * u[i], y[i] * u[i], u[i]])
+        a[j + 1, :] = np.array([0, 0, 0, -x[i], -y[i], -1, x[i] * v[i], y[i] * v[i], v[i]])
+        j += 2
+    a[8, 8] = 1  # assuming h_9 = 1
+    b = [0] * 8 + [1]
+
+    m = np.reshape(np.linalg.solve(a, b), (3, 3))
+    # print(m)
+    return m

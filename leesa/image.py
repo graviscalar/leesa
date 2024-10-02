@@ -1,7 +1,8 @@
 import os
 import numpy as np
 import PIL.Image
-
+import json
+from leesa.geometry import *
 
 class Colors:
     _COLORS = {
@@ -93,6 +94,32 @@ def image_save_np(img: np.ndarray = None, fn: str = None, mode: str = 'RGB') -> 
     return None
 
 
+def image_warping_2d_2d(img_auto, json_auto, img_plate, img_dst):
+    img_a = PIL.Image.open(img_auto)
+    img_p = PIL.Image.open(img_plate)
+
+    fp = open(json_auto, 'r')
+    dst_d = json.load(fp)
+    fp.close()
+
+    src = np.array([[0, 0],
+                    [img_p.width, 0],
+                    [0, img_p.height],
+                    [img_p.width, img_p.height]])
+    dst = np.array([dst_d['a'], dst_d['b'], dst_d['c'], dst_d['d']])
+    m = warping_2d_2d_matrix(src, dst)
+
+    img_a_1 = img_a.load()
+    img_p_1 = img_p.load()
+
+    for x in range(img_p.width):
+        for y in range(img_p.height):
+            p_hom = [x, y, 1]
+            p1_hom = m @ p_hom
+            p1 = [x / p1_hom[2] for x in p1_hom[:-1]]
+            img_a_1[int(p1[0]), int(p1[1])] = img_p_1[x, y]
+
+    img_a.save(img_dst)
 
 # convolution
 # # Define a 2x2 matrix

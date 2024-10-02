@@ -4,7 +4,7 @@ from leesa.bayer import *
 from leesa.camera import *
 from leesa.human import *
 import time
-from leesa.geometry import *
+from leesa.image import *
 
 if __name__ == '__main__':
     time_start = time.time()  # Log the time
@@ -112,6 +112,12 @@ if __name__ == '__main__':
     r = fov_vs_ground_intersection(cam=c, distance_maximum=distance_maximum, debug_obj='c:/temp/fov.obj')
     print('Area of FOV intersection with floor = ', r[0]['area'])
     print('Quantity of people in the area of FOV intersection with floor = ', r[1]['people_quantity'])
+
+    # An example of the Transfer license plate to the car
+    image_warping_2d_2d(img_auto='tests/data_sample/sample_5/sample_2.jpg',
+                        json_auto='tests/data_sample/sample_5/sample_2.json',
+                        img_plate='tests/data_sample/sample_5/USACalifornia-1963-M44149-26_Jul_2024-15_41_36.png',
+                        img_dst='temp/img/1.png')
 
     time_end = time.time()  # Log the time
     print("It took %f seconds for all processing." % (time_end - time_start))
